@@ -119,6 +119,11 @@ export interface ClientOptions {
    * Functions you want to use for caching results. Optional.
    */
   cache?: BasicCache;
+  /**
+   * Additional waiting time for rate limits
+   * @default 0
+   */
+  rateLimitResetOffset?: number;
 }
 
 interface ClientEvents {
@@ -181,6 +186,8 @@ export class Client {
   private readonly userAgent: string;
   /** @internal */
   private readonly cache?: ClientOptions["cache"];
+  /** @internal */
+  private readonly rateLimitResetOffset: number;
 
   /** @internal */
   protected rateLimit: RateLimitData = {
@@ -203,6 +210,7 @@ export class Client {
     this.timeout = options?.timeout ?? 10000;
     this.userAgent = options?.userAgent ?? "@zikeji/hypixel";
     this.cache = options?.cache;
+    this.rateLimitResetOffset = options?.rateLimitResetOffset ?? 0;
   }
 
   public on<E extends keyof ClientEvents>(
@@ -473,7 +481,7 @@ export class Client {
   ): Promise<T> {
     await this.queue.wait();
     if (this.rateLimit.remaining === 0) {
-      const timeout = this.rateLimit.reset * 1000;
+      const timeout = this.rateLimit.reset * 1000 + this.rateLimitResetOffset;
       this.emitter.emit(
         "limited",
         this.rateLimit.limit,

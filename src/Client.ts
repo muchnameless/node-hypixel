@@ -190,7 +190,7 @@ export class Client {
   private readonly rateLimitResetOffset: number;
 
   /** @internal */
-  protected rateLimit: RateLimitData = {
+  readonly rateLimit: RateLimitData = {
     remaining: -1,
     reset: -1,
     limit: -1,

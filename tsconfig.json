@@ -6,6 +6,7 @@
     "outDir": "./dist",
     "lib": ["ESNext"],
     "module": "ESNext",
+    "moduleResolution": "node",
     "target": "ESNext",
     "types": ["node", "mocha"],
     "incremental": true,

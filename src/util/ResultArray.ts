@@ -28,7 +28,8 @@ export function getResultArray<
   if (!(key in clonedResponse)) {
     throw new TypeError(`Key "${key}" was not in the response.`);
   }
-  const items = clonedResponse[key];
+  let items = clonedResponse[key];
+  if (items === null) items = [] as unknown as (typeof response)[K];
   const { ratelimit, cached, cloudflareCache } = clonedResponse;
   if (!Array.isArray(items)) {
     throw new TypeError(`Key "${key}" is not an array.`);

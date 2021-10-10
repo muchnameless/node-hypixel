@@ -29,7 +29,7 @@
     "docs:clean:ts-api": "rimraf docs/ts-api",
     "docs:build": "npm run docs:clean:ts-api && vuepress build docs",
     "test:build": "npm run test:lint && npm run build && npm run test && npm run coverage && npm run docs",
-    "postinstall": "npm run build"
+    "prepack": "npm run build"
   },
   "homepage": "https://node-hypixel.zikeji.com/",
   "author": "Zikeji <me@zikeji.com>",

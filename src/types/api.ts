@@ -2972,6 +2972,50 @@ export declare namespace Components {
       experience_skill_mining?: number;
       experience_skill_runecrafting?: number;
       experience_skill_taming?: number;
+      jacob2?: {
+        medals_inv: {
+          bronze?: number;
+          silver?: number;
+          gold?: number;
+        };
+        perks: {
+          double_drops?: number;
+          farming_level_cap?: number;
+        };
+        contests?: {
+          [
+            contest: `${bigint}:${bigint}_${bigint}:${
+              | "INK_SACK:3"
+              | "POTATO_ITEM"
+              | "CARROT_ITEM"
+              | "CACTUS"
+              | "SUGAR_CANE"
+              | "MUSHROOM_COLLECTION"
+              | "PUMPKIN"
+              | "NETHER_STALK"
+              | "WHEAT"
+              | "MELON"}`
+          ]: {
+            collected: number;
+            claimed_rewards?: boolean;
+            claimed_position?: number;
+            claimed_participants?: number;
+          };
+        };
+        talked?: boolean;
+        unique_golds?: (
+          | "INK_SACK:3"
+          | "POTATO_ITEM"
+          | "CARROT_ITEM"
+          | "CACTUS"
+          | "SUGAR_CANE"
+          | "MUSHROOM_COLLECTION"
+          | "PUMPKIN"
+          | "NETHER_STALK"
+          | "WHEAT"
+          | "MELON"
+        )[];
+      };
     }
     export interface SkyBlockProfileMemberBase {
       /**
@@ -6054,7 +6098,8 @@ export declare namespace Paths {
   namespace ResourcesGuildsAchievements {
     namespace Get {
       namespace Responses {
-        export type $200 = Components.Schemas.GuildsAchievementsResourceResponse;
+        export type $200 =
+          Components.Schemas.GuildsAchievementsResourceResponse;
       }
     }
   }
@@ -6075,7 +6120,8 @@ export declare namespace Paths {
   namespace ResourcesSkyblockCollections {
     namespace Get {
       namespace Responses {
-        export type $200 = Components.Schemas.SkyBlockCollectionsResourcesResponse;
+        export type $200 =
+          Components.Schemas.SkyBlockCollectionsResourcesResponse;
       }
     }
   }

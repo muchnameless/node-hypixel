@@ -480,11 +480,12 @@ export class Client {
   ): Promise<T> {
     await this.queue.wait();
     if (this.rateLimit.remaining === 0) {
-      const timeout = this.rateLimit.reset * 1000 + this.rateLimitResetOffset;
+      const timeout =
+        this.rateLimit.reset - Date.now() + this.rateLimitResetOffset;
       this.emitter.emit(
         "limited",
         this.rateLimit.limit,
-        new Date(Date.now() + timeout)
+        new Date(this.rateLimit.reset + this.rateLimitResetOffset)
       );
       await new Promise((resolve) => {
         setTimeout(resolve, timeout);
@@ -584,10 +585,16 @@ export class Client {
     Object.keys(this.rateLimit).forEach((key) => {
       const headerKey = `ratelimit-${key}`;
       if (headerKey in headers) {
-        this.rateLimit[key as keyof Client["rateLimit"]] = parseInt(
-          headers[headerKey] as string,
-          10
-        );
+        if (key !== "reset") {
+          this.rateLimit[key as keyof Client["rateLimit"]] = parseInt(
+            headers[headerKey],
+            10
+          );
+        } else {
+          this.rateLimit[key as keyof Client["rateLimit"]] =
+            parseInt(headers[headerKey], 10) * 1_000 +
+            (Date.parse(headers.date) || Date.now());
+        }
       }
     });
   }

@@ -1,5 +1,6 @@
 import { EventEmitter } from "events";
 import { URL } from "url";
+import { setTimeout as sleep } from "timers/promises";
 import { GenericHTTPError } from "./errors/GenericHTTPError";
 import { InvalidKeyError } from "./errors/InvalidKeyError";
 import { FindGuild } from "./methods/findGuild";
@@ -454,11 +455,11 @@ export class Client {
         this.createActionableCall(path, parameters)
       );
     }
-    const key = `${path.split("/").join(":")}${
+    const key = `${path.replaceAll("/", ":")}${
       Object.values(parameters).length === 0
         ? ""
         : `:${Object.values(parameters).map((v) =>
-            v.toLowerCase().replace(/-/g, "")
+            v.toLowerCase().replaceAll("-", "")
           )}`
     }`;
     const cachedResponse: (T & { cached?: boolean }) | undefined =
@@ -487,9 +488,7 @@ export class Client {
         this.rateLimit.limit,
         new Date(this.rateLimit.reset + this.rateLimitResetOffset)
       );
-      await new Promise((resolve) => {
-        setTimeout(resolve, timeout);
-      });
+      await sleep(timeout);
       this.emitter.emit("reset");
     }
     let response: T & DefaultMeta;

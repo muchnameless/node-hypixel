@@ -21,6 +21,7 @@
   "rules": {
     "camelcase": 0,
     "import/prefer-default-export": 0,
+    "import/no-unresolved": 0,
     "lines-between-class-members": 0,
     "no-shadow": 0,
     "@typescript-eslint/no-namespace": 0,

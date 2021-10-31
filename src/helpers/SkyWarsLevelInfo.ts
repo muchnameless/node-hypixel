@@ -126,14 +126,14 @@ export function getSkyWarsLevelInfo(
   const remainingExpToNextLevel = nextLevelExp - currentExp;
   const nextLevelProgress = expInCurrentLevel / expToNextLevel;
   const preciseLevel = level + nextLevelProgress;
-  const info = ({
+  const info = {
     level,
     preciseLevel,
     currentExp,
     expToLevel,
     expToNextLevel,
     remainingExpToNextLevel,
-  } as never) as SkyWarsLevelInfoAndPrestige;
+  } as never as SkyWarsLevelInfoAndPrestige;
   if (includePrestige !== true) {
     return info;
   }

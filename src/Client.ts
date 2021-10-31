@@ -461,9 +461,8 @@ export class Client {
             v.toLowerCase().replace(/-/g, "")
           )}`
     }`;
-    const cachedResponse:
-      | (T & { cached?: boolean })
-      | undefined = await this.cache.get<T>(key);
+    const cachedResponse: (T & { cached?: boolean }) | undefined =
+      await this.cache.get<T>(key);
     if (cachedResponse) {
       cachedResponse.cached = true;
       return cachedResponse;

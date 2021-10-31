@@ -47,7 +47,8 @@ export function getSkyBlockProfileMemberSkills(
   for (let i = 0; i < Object.keys(skills).length; i += 1) {
     const skillName = Object.keys(skills)[i];
     const skill = skills[skillName];
-    const skillKey = `experience_skill_${skillName.toLowerCase()}` as keyof Components.Schemas.SkyBlockProfileMember;
+    const skillKey =
+      `experience_skill_${skillName.toLowerCase()}` as keyof Components.Schemas.SkyBlockProfileMember;
     let exp = 0;
     if (skillKey in profileMember) {
       exp = profileMember[skillKey] as number;

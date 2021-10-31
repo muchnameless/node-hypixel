@@ -34,7 +34,7 @@ export function getResultArray<
     throw new TypeError(`Key "${key}" is not an array.`);
   }
   delete clonedResponse[key];
-  const arr = ([...items] as never) as ResultArray<T, K>;
+  const arr = [...items] as never as ResultArray<T, K>;
   const meta: Omit<T, K> & DefaultMeta = {
     ...clonedResponse,
   };

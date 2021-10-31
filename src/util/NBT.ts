@@ -16,6 +16,7 @@ export async function parse(
   }
   if (!nbt) {
     try {
+      // eslint-disable-next-line import/no-extraneous-dependencies
       nbt = await import("prismarine-nbt");
     } catch (e) {
       /* istanbul ignore next */

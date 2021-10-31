@@ -46,12 +46,12 @@ const SKYBLOCK_INVENTORIES: (keyof SkyBlockProfileTransformedInventories)[] = [
 export async function transformSkyBlockProfileMemberInventories(
   member: Components.Schemas.SkyBlockProfileMember
 ): Promise<SkyBlockProfileMemberWithTransformedInventories> {
-  const transformedMember: SkyBlockProfileMemberWithTransformedInventories = member as never;
+  const transformedMember: SkyBlockProfileMemberWithTransformedInventories =
+    member as never;
   await Promise.all(
     SKYBLOCK_INVENTORIES.map(async (key) => {
-      const inventoryData: Components.Schemas.SkyBlockProfileInventoryData = transformedMember[
-        key
-      ] as never;
+      const inventoryData: Components.Schemas.SkyBlockProfileInventoryData =
+        transformedMember[key] as never;
       if (inventoryData && inventoryData.data) {
         try {
           transformedMember[key] = await transformItemData(inventoryData.data);

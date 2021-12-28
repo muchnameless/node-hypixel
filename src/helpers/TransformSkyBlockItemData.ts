@@ -6,8 +6,11 @@ import { NBTInventory, transformItemData } from "./TransformItemData";
  */
 export interface SkyBlockProfileTransformedInventories {
   inv_armor: NBTInventory;
+  backpack_contents?: NBTInventory;
+  backpack_icons?: NBTInventory;
   candy_inventory_contents?: NBTInventory;
   ender_chest_contents?: NBTInventory;
+  personal_vault_contents?: NBTInventory;
   fishing_bag?: NBTInventory;
   inv_contents?: NBTInventory;
   potion_bag?: NBTInventory;
@@ -28,8 +31,11 @@ export type SkyBlockProfileMemberWithTransformedInventories = Omit<
 /** @internal */
 const SKYBLOCK_INVENTORIES: (keyof SkyBlockProfileTransformedInventories)[] = [
   "inv_armor",
+  "backpack_contents",
+  "backpack_icons",
   "candy_inventory_contents",
   "ender_chest_contents",
+  "personal_vault_contents",
   "fishing_bag",
   "inv_contents",
   "potion_bag",
@@ -52,7 +58,7 @@ export async function transformSkyBlockProfileMemberInventories(
     SKYBLOCK_INVENTORIES.map(async (key) => {
       const inventoryData: Components.Schemas.SkyBlockProfileInventoryData =
         transformedMember[key] as never;
-      if (inventoryData && inventoryData.data) {
+      if (inventoryData?.data) {
         try {
           transformedMember[key] = await transformItemData(inventoryData.data);
         } catch (e) {

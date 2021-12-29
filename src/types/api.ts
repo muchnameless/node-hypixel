@@ -2906,6 +2906,7 @@ export declare namespace Components {
        * An array of values, each value describing an island that has been spawned by the member. e.g. "Pond Island"
        */
       achievement_spawned_island_types?: string[];
+      backpack_contents?: Record<string, SkyBlockProfileInventoryData>;
       coin_purse: number;
       coop_invitation?: /* Coop invitation that the member accepted. */ SkyBlockProfileCoopInvitation;
       /**

@@ -2888,6 +2888,7 @@ export declare namespace Components {
     export interface SkyBlockProfileInventoryAPI {
       candy_inventory_contents?: SkyBlockProfileInventoryData;
       ender_chest_contents?: SkyBlockProfileInventoryData;
+      personal_vault_contents?: SkyBlockProfileInventoryData;
       fishing_bag?: SkyBlockProfileInventoryData;
       inv_contents?: SkyBlockProfileInventoryData;
       potion_bag?: SkyBlockProfileInventoryData;
@@ -2955,6 +2956,7 @@ export declare namespace Components {
       unlocked_coll_tiers?: string[];
       candy_inventory_contents?: SkyBlockProfileInventoryData;
       ender_chest_contents?: SkyBlockProfileInventoryData;
+      personal_vault_contents?: SkyBlockProfileInventoryData;
       fishing_bag?: SkyBlockProfileInventoryData;
       inv_contents?: SkyBlockProfileInventoryData;
       potion_bag?: SkyBlockProfileInventoryData;

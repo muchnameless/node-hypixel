@@ -91,7 +91,7 @@ export interface Parameters {
 export interface BasicCache {
   get<T extends Components.Schemas.ApiSuccess>(
     key: string
-  ): Promise<(T & DefaultMeta) | undefined>;
+  ): Promise<(T & DefaultMeta) | undefined | null>;
   set<T extends Components.Schemas.ApiSuccess>(
     key: string,
     value: T & DefaultMeta
@@ -462,7 +462,7 @@ export class Client {
             v.toLowerCase().replaceAll("-", "")
           )}`
     }`;
-    const cachedResponse: (T & { cached?: boolean }) | undefined =
+    const cachedResponse: (T & { cached?: boolean }) | undefined | null =
       await this.cache.get<T>(key);
     if (cachedResponse) {
       cachedResponse.cached = true;

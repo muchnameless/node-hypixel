@@ -95,7 +95,7 @@ export interface BasicCache {
   set<T extends Components.Schemas.ApiSuccess>(
     key: string,
     value: T & DefaultMeta
-  ): Promise<void>;
+  ): Promise<unknown>;
 }
 
 export interface ClientOptions {

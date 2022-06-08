@@ -2910,8 +2910,8 @@ export declare namespace Components {
       achievement_spawned_island_types?: string[];
       backpack_contents?: Record<string, SkyBlockProfileInventoryData>;
       backpack_icons?: Record<string, SkyBlockProfileInventoryData>;
-      coin_purse?: number;
       bank_account?: number;
+      coin_purse?: number;
       coop_invitation?: /* Coop invitation that the member accepted. */ SkyBlockProfileCoopInvitation;
       /**
        * An array of values, each value describing a minion and it's tier that the player has upgraded / crafted.

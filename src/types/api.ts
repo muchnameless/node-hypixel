@@ -2935,6 +2935,7 @@ export declare namespace Components {
         };
         selected_dungeon_class?: string;
       };
+      equippment_contents?: SkyBlockProfileInventoryData;
       fairy_exchanges?: number;
       fairy_souls?: number;
       fairy_souls_collected?: number;

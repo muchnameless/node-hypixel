@@ -2888,9 +2888,10 @@ export declare namespace Components {
     export interface SkyBlockProfileInventoryAPI {
       candy_inventory_contents?: SkyBlockProfileInventoryData;
       ender_chest_contents?: SkyBlockProfileInventoryData;
-      personal_vault_contents?: SkyBlockProfileInventoryData;
+      equippment_contents?: SkyBlockProfileInventoryData;
       fishing_bag?: SkyBlockProfileInventoryData;
       inv_contents?: SkyBlockProfileInventoryData;
+      personal_vault_contents?: SkyBlockProfileInventoryData;
       potion_bag?: SkyBlockProfileInventoryData;
       quiver?: SkyBlockProfileInventoryData;
       sacks_counts?: /* The contents of their sacks. */ SkyBlockProfileSacksCounts;
@@ -2909,7 +2910,8 @@ export declare namespace Components {
       achievement_spawned_island_types?: string[];
       backpack_contents?: Record<string, SkyBlockProfileInventoryData>;
       backpack_icons?: Record<string, SkyBlockProfileInventoryData>;
-      coin_purse: number;
+      coin_purse?: number;
+      bank_account?: number;
       coop_invitation?: /* Coop invitation that the member accepted. */ SkyBlockProfileCoopInvitation;
       /**
        * An array of values, each value describing a minion and it's tier that the player has upgraded / crafted.

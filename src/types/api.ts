@@ -2978,6 +2978,7 @@ export declare namespace Components {
       experience_skill_foraging?: number;
       experience_skill_mining?: number;
       experience_skill_runecrafting?: number;
+      experience_skill_social2?: number;
       experience_skill_taming?: number;
       jacob2?: {
         medals_inv: {
@@ -3533,6 +3534,7 @@ export declare namespace Components {
       experience_skill_foraging?: number;
       experience_skill_mining?: number;
       experience_skill_runecrafting?: number;
+      experience_skill_social2?: number;
       experience_skill_taming?: number;
     }
     export interface SkyBlockProfileSlayerBoss {

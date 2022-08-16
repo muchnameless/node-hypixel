@@ -397,15 +397,13 @@ export class Client extends EventEmitter {
 	public async call<T extends Components.Schemas.ApiSuccess>(
 		path: string,
 		options?: RequestOptions,
-		parameters: Parameters = {},
+		parameters?: Parameters,
 	): Promise<T & { cached?: boolean }> {
 		if (!this.cache) {
 			return this.executeActionableCall(this.createActionableCall(path, options, parameters));
 		}
 		const key = `${path.replaceAll('/', ':')}${
-			Object.values(parameters).length === 0
-				? ''
-				: `:${Object.values(parameters).map((v) => v.toLowerCase().replaceAll('-', ''))}`
+			parameters ? `:${Object.values(parameters).map((v) => v.toLowerCase().replaceAll('-', ''))}` : ''
 		}`;
 		const cachedResponse: (T & { cached?: boolean }) | undefined | null = await this.cache.get<T>(key);
 		if (cachedResponse) {

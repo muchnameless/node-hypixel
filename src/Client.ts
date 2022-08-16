@@ -410,7 +410,7 @@ export class Client extends EventEmitter {
 			cachedResponse.cached = true;
 			return cachedResponse;
 		}
-		const response: T = await this.executeActionableCall(this.createActionableCall(path, parameters));
+		const response: T = await this.executeActionableCall(this.createActionableCall(path, options, parameters));
 		await this.cache.set(key, response);
 		return response;
 	}

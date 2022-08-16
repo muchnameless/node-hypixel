@@ -34,4 +34,17 @@ export class SkyBlockResources extends Method {
 			['collections'],
 		);
 	}
+
+	/**
+	 * Returns the current items from the SkyBlock gamemode.
+	 * @category API
+	 */
+	public async items(
+		options?: RequestOptions,
+	): Promise<ResultObject<Paths.ResourcesSkyblockItems.Get.Responses.$200, ['items']>> {
+		return getResultObject(
+			await this.client.call<Paths.ResourcesSkyblockItems.Get.Responses.$200>('resources/skyblock/items', options),
+			['items'],
+		);
+	}
 }

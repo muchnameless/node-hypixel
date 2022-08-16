@@ -3991,6 +3991,44 @@ export declare namespace Components {
 			version: string;
 			collections: /* Objects for each skill. */ SkyBlockResourcesSkills;
 		}
+		interface Upgrade {
+			amount: number;
+		}
+		interface EssenceUpgrade extends Upgrade {
+			essence_type: string;
+		}
+		interface ItemUpgrade extends Upgrade {
+			item_id: string;
+		}
+		export interface SkyBlockItem {
+			material: string;
+			durability: number;
+			skin: string;
+			name: string;
+			category: string;
+			stats?: Record<string, number>;
+			soulbound?: 'COOP' | 'SOLO';
+			tier: 'RARE';
+			npc_sell_price: number;
+			dungeon_item_conversion_cost?: EssenceUpgrade;
+			upgrade_costs?: (EssenceUpgrade | ItemUpgrade)[][];
+			id: string;
+			prestige?: {
+				item_id: string;
+				costs: (EssenceUpgrade | ItemUpgrade)[];
+			};
+		}
+		export interface SkyBlockItemsResourcesResponse {
+			/**
+			 * Whether or not the request succeeded.
+			 */
+			success: boolean;
+			/**
+			 * Unix timestamp this resource was last updated.
+			 */
+			lastUpdated: number;
+			items: SkyBlockItem[];
+		}
 	}
 }
 export declare namespace Paths {
@@ -6113,6 +6151,13 @@ export declare namespace Paths {
 		namespace Get {
 			namespace Responses {
 				export type $200 = Components.Schemas.SkyBlockSkillsResourcesResponse;
+			}
+		}
+	}
+	namespace ResourcesSkyblockItems {
+		namespace Get {
+			namespace Responses {
+				export type $200 = Components.Schemas.SkyBlockItemsResourcesResponse;
 			}
 		}
 	}

@@ -450,7 +450,7 @@ export class Client extends EventEmitter {
 	private createActionableCall<T extends Components.Schemas.ApiSuccess>(
 		path: string,
 		options?: RequestOptions,
-		parameters: Parameters = {},
+		parameters?: Parameters,
 	): ActionableCall<T> {
 		let auth = true;
 
@@ -465,7 +465,7 @@ export class Client extends EventEmitter {
 		}
 
 		return {
-			execute: this.callMethod.bind(this, path, parameters, auth, options?.signal),
+			execute: this.callMethod.bind(this, path, auth, parameters, options?.signal),
 			retries: 0,
 			auth,
 		} as ActionableCall<T>;
@@ -476,10 +476,13 @@ export class Client extends EventEmitter {
 		T extends Components.Schemas.ApiSuccess & {
 			cause?: string;
 		} & { cloudflareCache?: DefaultMeta['cloudflareCache'] },
-	>(path: string, parameters: Parameters, auth: boolean, signal?: AbortSignal): Promise<T> {
+	>(path: string, auth: boolean, parameters?: Parameters, signal?: AbortSignal): Promise<T> {
 		const url = new URL(path, Client.endpoint);
-		for (const [key, value] of Object.entries(parameters)) {
-			url.searchParams.set(key, value);
+
+		if (parameters) {
+			for (const [key, value] of Object.entries(parameters)) {
+				url.searchParams.set(key, value);
+			}
 		}
 
 		if (auth) {

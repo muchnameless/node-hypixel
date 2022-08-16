@@ -180,7 +180,7 @@ describe("Test transformSkyBlockProfileMemberInventories", function () {
         if (typeof inventory === "undefined") continue;
         expect(inventory).to.be.an("array");
         // merge backpacks/bags items into inventory arr
-        inventory.forEach((i) => {
+        for (const i of inventory) {
           if (i === null || !i.tag || !i.tag.ExtraAttributes) return;
           for (const key of Object.keys(i.tag.ExtraAttributes)) {
             if (key.endsWith("_backpack_data") || key.endsWith("_bag_data")) {
@@ -190,7 +190,7 @@ describe("Test transformSkyBlockProfileMemberInventories", function () {
               }
             }
           }
-        });
+        }
         for (const item of inventory) {
           if (item === null) continue;
           expect(item.id).to.be.a("number");

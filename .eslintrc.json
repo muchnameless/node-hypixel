@@ -3,7 +3,12 @@
     "es6": true,
     "node": true
   },
-  "extends": ["airbnb-typescript-prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:prettier/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -12,7 +17,7 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "import"],
   "settings": {
     "react": {
       "version": "999.999.999"
@@ -21,7 +26,21 @@
   "rules": {
     "camelcase": 0,
     "import/prefer-default-export": 0,
-    "import/no-unresolved": 0,
+    "import/default": 0,
+		"import/no-unresolved": 0,
+		"import/order": [
+			1,
+			{
+				"pathGroups": [
+					{
+						"pattern": "^#",
+						"group": "internal"
+					}
+				],
+				"pathGroupsExcludedImportTypes": ["internal", "external", "builtins"],
+				"groups": ["builtin", "external", "unknown", "parent", "sibling", "internal", "index", "object", "type"]
+			}
+		],
     "lines-between-class-members": 0,
     "no-shadow": 0,
     "@typescript-eslint/no-namespace": 0,
@@ -35,6 +54,7 @@
     "no-unused-vars": 0,
     "@typescript-eslint/no-unused-vars": 2,
     "no-use-before-define": 0,
+    "@typescript-eslint/consistent-type-imports": 1,
     "@typescript-eslint/no-use-before-define": [
       2,
       {

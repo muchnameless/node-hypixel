@@ -8,26 +8,24 @@
   "engines": {
     "node": ">=16"
   },
-  "private": false,
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
     "commit": "cz",
     "lint": "eslint --ext ts src --fix",
-    "clean": "rimraf dist",
+    "clean": "rm -rf dist",
     "build": "npm run clean && tsc -p .",
     "types:openapi": "dtsgen --out ./src/types/api.ts --target ES2015 ./openapi.yaml && node ./scripts/process_api_output.js && eslint --ext ts ./src/types/api.ts --fix",
     "watch": "npm run clean && tsc -p . -w",
     "test": "nodenv --exec npx -- mocha -r ts-node/esm tests/**/*.test.ts",
     "test:helpers": "nodenv --exec npx -- mocha -r ts-node/esm tests/helpers.test.ts",
     "test:ci": "mocha -r ts-node/esm tests/**/*.test.ts",
-    "test:deno": "deno test --allow-read --allow-net ./tests/mod.test.deno.ts",
     "test:lint": "eslint --ext ts src",
     "coverage": "nyc npm t",
     "coverage:ci": "nyc npm run test:ci",
     "docs:dev": "npm run docs:clean:ts-api && vuepress dev docs",
-    "docs:clean:ts-api": "rimraf docs/ts-api",
+    "docs:clean:ts-api": "rm -rf docs/ts-api",
     "docs:build": "npm run docs:clean:ts-api && vuepress build docs",
     "test:build": "npm run test:lint && npm run build && npm run test && npm run coverage && npm run docs",
     "prepare": "npm run build",
@@ -64,247 +62,59 @@
     "!src/**/*.deno.ts{,x}",
     "!docs/"
   ],
-  "release": {
-    "branches": [
-      "main"
-    ],
-    "plugins": [
-      [
-        "@semantic-release/commit-analyzer",
-        {
-          "preset": "conventionalcommits",
-          "releaseRules": [
-            {
-              "type": "docs",
-              "release": "patch"
-            },
-            {
-              "type": "refactor",
-              "release": "patch"
-            },
-            {
-              "scope": "no-release",
-              "release": false
-            }
-          ],
-          "presetConfig": {
-            "types": [
-              {
-                "type": "feat",
-                "section": "Features"
-              },
-              {
-                "type": "fix",
-                "section": "Bug Fixes"
-              },
-              {
-                "type": "docs",
-                "section": "Documentation"
-              },
-              {
-                "type": "style",
-                "hidden": true
-              },
-              {
-                "type": "refactor",
-                "section": "Code Refactoring"
-              },
-              {
-                "type": "perf",
-                "section": "Performance Improvements"
-              },
-              {
-                "type": "test",
-                "section": "Tests"
-              },
-              {
-                "type": "build",
-                "hidden": true
-              },
-              {
-                "type": "ci",
-                "hidden": true
-              },
-              {
-                "type": "chore",
-                "section": "Miscellaneous Chores"
-              },
-              {
-                "type": "revert",
-                "section": "Reverts"
-              }
-            ]
-          }
-        }
-      ],
-      [
-        "@semantic-release/release-notes-generator",
-        {
-          "preset": "conventionalcommits",
-          "presetConfig": {
-            "types": [
-              {
-                "type": "feat",
-                "section": "Features"
-              },
-              {
-                "type": "fix",
-                "section": "Bug Fixes"
-              },
-              {
-                "type": "docs",
-                "section": "Documentation"
-              },
-              {
-                "type": "style",
-                "hidden": true
-              },
-              {
-                "type": "refactor",
-                "section": "Code Refactoring"
-              },
-              {
-                "type": "perf",
-                "section": "Performance Improvements"
-              },
-              {
-                "type": "test",
-                "section": "Tests"
-              },
-              {
-                "type": "build",
-                "hidden": true
-              },
-              {
-                "type": "ci",
-                "hidden": true
-              },
-              {
-                "type": "chore",
-                "section": "Miscellaneous Chores"
-              },
-              {
-                "type": "revert",
-                "section": "Reverts"
-              }
-            ]
-          }
-        }
-      ],
-      [
-        "@semantic-release/changelog",
-        {
-          "changelogTitle": "# Changelog\n\nAll notable changes to this project will be documented in this file. See\n[Conventional Commits](https://conventionalcommits.org) for commit guidelines."
-        }
-      ],
-      [
-        "@semantic-release/exec",
-        {
-          "prepareCmd": "sed -i 's/deno\\.land\\/x\\/hypixel@v[[:digit:]]\\+\\.[[:digit:]]\\+\\.[[:digit:]]\\+/deno.land\\/x\\/hypixel\\/v${nextRelease.version}/' README.md"
-        }
-      ],
-      [
-        "@semantic-release/npm",
-        {
-          "npmPublish": true,
-          "tarballDir": "pack"
-        }
-      ],
-      [
-        "@semantic-release/github",
-        {
-          "assignees": [
-            "zikeji"
-          ],
-          "addReleases": "top",
-          "assets": [
-            {
-              "path": "CHANGELOG.md"
-            },
-            {
-              "path": "pack/*.tgz"
-            },
-            {
-              "path": "dist.zip",
-              "name": "dist-${nextRelease.gitTag}.zip"
-            }
-          ]
-        }
-      ],
-      [
-        "@semantic-release/git",
-        {
-          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
-          "assets": [
-            "CHANGELOG.md",
-            "package.json",
-            "package-lock.json",
-            "deno_dist/**/*"
-          ]
-        }
-      ]
-    ]
-  },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
-    "@mdi/svg": "^6.5.95",
-    "@mr-hope/vuepress-plugin-last-update": "^1.9.6",
-    "@mr-hope/vuepress-types": "^1.21.0",
+    "@mdi/svg": "^7.0.96",
+    "@mr-hope/vuepress-plugin-last-update": "^1.11.0",
+    "@mr-hope/vuepress-types": "^1.30.0",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@types/chai": "^4.3.0",
-    "@types/chai-as-promised": "^7.1.4",
+    "@types/chai": "^4.3.3",
+    "@types/chai-as-promised": "^7.1.5",
     "@types/debug": "^4.1.7",
-    "@types/mocha": "^9.0.0",
-    "@types/node": "^17.0.5",
-    "@types/yargs-parser": "^20.2.1",
-    "@typescript-eslint/eslint-plugin": "^5.8.1",
-    "@typescript-eslint/parser": "^5.8.1",
-    "chai": "^4.3.4",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^18.7.6",
+    "@types/yargs-parser": "^21.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.33.1",
+    "@typescript-eslint/parser": "^5.33.1",
+    "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
-    "commitizen": "^4.2.4",
-    "conventional-changelog-conventionalcommits": "^4.6.2",
+    "commitizen": "^4.2.5",
+    "conventional-changelog-conventionalcommits": "^5.0.0",
     "cz-conventional-changelog": "^3.3.0",
-    "denoify": "^0.10.5",
-    "dtsgenerator": "^3.13.2",
-    "eslint": "^8.5.0",
+    "dtsgenerator": "^3.16.0",
+    "eslint": "^8.22.0",
     "eslint-config-airbnb-typescript-prettier": "^5.0.0",
     "esm": "^3.2.25",
-    "mocha": "^9.1.3",
+    "mocha": "^10.0.0",
     "node-env-run": "^4.0.2",
     "nyc": "^15.1.0",
-    "prettier": "^2.5.1",
-    "prismarine-nbt": "^2.0.0",
-    "prismjs": "^1.25.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "prettier": "^2.7.1",
+    "prismarine-nbt": "^2.2.1",
+    "prismjs": "^1.28.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "remarkable": "^2.0.1",
-    "rimraf": "^3.0.2",
-    "semantic-release": "^18.0.1",
-    "stylus-svg": "^1.3.0",
-    "swagger-ui": "^4.1.3",
-    "ts-node": "^10.4.0",
-    "typedoc": "^0.22.10",
-    "typedoc-plugin-markdown": "^3.11.8",
-    "typescript": "^4.5.4",
-    "vuepress": "^1.9.5",
-    "vuepress-plugin-typedoc": "^0.10.0",
-    "vuepress-theme-hope": "^1.22.0",
-    "yaml-loader": "^0.6.0"
+    "semantic-release": "^19.0.3",
+    "stylus-svg": "^1.3.1",
+    "swagger-ui": "^4.13.2",
+    "ts-node": "^10.9.1",
+    "typedoc": "^0.23.10",
+    "typedoc-plugin-markdown": "^3.13.4",
+    "typescript": "^4.7.4",
+    "vuepress": "^1.9.7",
+    "vuepress-plugin-typedoc": "^0.11.1",
+    "vuepress-theme-hope": "^1.30.0",
+    "yaml-loader": "^0.8.0"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "denoify": {
-    "includes": [
-      "README.md",
-      "LICENSE",
-      "LICENSE-HYPIXEL-PHP.md",
-      "CHANGELOG.md",
-      "openapi.yaml"
-    ]
+  "dependencies": {
+    "@sapphire/async-queue": "^1.5.0",
+    "undici": "^5.8.2"
   }
 }

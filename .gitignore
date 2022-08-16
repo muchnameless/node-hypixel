@@ -13,3 +13,12 @@ tests/**/*.ts
 !tests/**/*.test.deno.ts
 !tests/structures/*.ts
 /deno_dist
+
+# Yarn files
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

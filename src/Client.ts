@@ -74,7 +74,20 @@ export interface DefaultMeta {
 }
 
 export interface RequestOptions {
+	/**
+	 * signal used to abort the (queued) request
+	 */
 	signal?: AbortSignal;
+	/**
+	 * whether to skip the cache check
+	 * @default false
+	 */
+	force?: boolean;
+	/**
+	 * whether to cache the response
+	 * @default true
+	 */
+	cache?: boolean;
 }
 
 /** @hidden */
@@ -399,9 +412,10 @@ export class Client extends EventEmitter {
 		options?: RequestOptions,
 		parameters?: Parameters,
 	): Promise<T & { cached?: boolean }> {
-		if (!this.cache) {
+		if (!this.cache || options?.force) {
 			return this.executeActionableCall(this.createActionableCall(path, options, parameters));
 		}
+
 		const key = `${path.replaceAll('/', ':')}${
 			parameters ? `:${Object.values(parameters).map((v) => v.toLowerCase().replaceAll('-', ''))}` : ''
 		}`;
@@ -410,8 +424,9 @@ export class Client extends EventEmitter {
 			cachedResponse.cached = true;
 			return cachedResponse;
 		}
+
 		const response: T = await this.executeActionableCall(this.createActionableCall(path, options, parameters));
-		await this.cache.set(key, response);
+		if (options?.cache !== false) await this.cache.set(key, response);
 		return response;
 	}
 

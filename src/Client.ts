@@ -172,8 +172,6 @@ export class Client extends EventEmitter {
 	/** @internal */
 	private static readonly endpoint = new URL(`https://api.hypixel.net`);
 	/** @internal */
-	private readonly queue = new AsyncQueue();
-	/** @internal */
 	private readonly apiKey: string;
 	/** @internal */
 	private readonly retries: number;
@@ -186,7 +184,8 @@ export class Client extends EventEmitter {
 	/** @internal */
 	private readonly rateLimitResetOffset: number;
 
-	/** @internal */
+	readonly queue = new AsyncQueue();
+
 	readonly rateLimit: RateLimitData = {
 		remaining: -1,
 		reset: -1,

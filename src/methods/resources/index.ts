@@ -1,8 +1,6 @@
 import { Method } from '../../util/Method';
-import { getResultObject } from '../../util/ResultObject';
 import { GuildsResources } from './guilds';
 import { SkyBlockResources } from './skyblock';
-import type { ResultObject } from '../../util/ResultObject';
 import type { Paths } from '../../types/api';
 import type { RequestOptions } from '../../Client';
 
@@ -15,13 +13,8 @@ export class Resources extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async achievements(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesAchievements.Get.Responses.$200, 'achievements'>> {
-		return getResultObject(
-			await this.client.call<Paths.ResourcesAchievements.Get.Responses.$200>('resources/achievements', options),
-			'achievements',
-		);
+	public achievements(options?: RequestOptions): Promise<Paths.ResourcesAchievements.Get.Responses.$200> {
+		return this.client.call<Paths.ResourcesAchievements.Get.Responses.$200>('resources/achievements', options);
 	}
 
 	/**
@@ -32,13 +25,8 @@ export class Resources extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async challenges(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesChallenges.Get.Responses.$200, 'challenges'>> {
-		return getResultObject(
-			await this.client.call<Paths.ResourcesChallenges.Get.Responses.$200>('resources/challenges', options),
-			'challenges',
-		);
+	public challenges(options?: RequestOptions): Promise<Paths.ResourcesChallenges.Get.Responses.$200> {
+		return this.client.call<Paths.ResourcesChallenges.Get.Responses.$200>('resources/challenges', options);
 	}
 
 	/**
@@ -49,13 +37,8 @@ export class Resources extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async quests(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesQuests.Get.Responses.$200, 'quests'>> {
-		return getResultObject(
-			await this.client.call<Paths.ResourcesQuests.Get.Responses.$200>('resources/quests', options),
-			'quests',
-		);
+	public quests(options?: RequestOptions): Promise<Paths.ResourcesQuests.Get.Responses.$200> {
+		return this.client.call<Paths.ResourcesQuests.Get.Responses.$200>('resources/quests', options);
 	}
 
 	/**

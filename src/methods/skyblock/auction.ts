@@ -1,8 +1,6 @@
 import { Method } from '../../util/Method';
-import { getResultArray } from '../../util/ResultArray';
 import type { RequestOptions } from '../../Client';
 import type { Paths } from '../../types/api';
-import type { ResultArray } from '../../util/ResultArray';
 
 export class SkyBlockAuction extends Method {
 	/**
@@ -13,14 +11,11 @@ export class SkyBlockAuction extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async player(
+	public player(
 		player: Paths.SkyblockAuction.Get.Parameters.Player,
 		options?: RequestOptions,
-	): Promise<ResultArray<Paths.SkyblockAuction.Get.Responses.$200, 'auctions'>> {
-		return getResultArray(
-			await this.client.call<Paths.SkyblockAuction.Get.Responses.$200>('skyblock/auction', options, { player }),
-			'auctions',
-		);
+	): Promise<Paths.SkyblockAuction.Get.Responses.$200> {
+		return this.client.call<Paths.SkyblockAuction.Get.Responses.$200>('skyblock/auction', options, { player });
 	}
 
 	/**
@@ -31,14 +26,11 @@ export class SkyBlockAuction extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async profile(
+	public profile(
 		profile: Paths.SkyblockAuction.Get.Parameters.Profile,
 		options?: RequestOptions,
-	): Promise<ResultArray<Paths.SkyblockAuction.Get.Responses.$200, 'auctions'>> {
-		return getResultArray(
-			await this.client.call<Paths.SkyblockAuction.Get.Responses.$200>('skyblock/auction', options, { profile }),
-			'auctions',
-		);
+	): Promise<Paths.SkyblockAuction.Get.Responses.$200> {
+		return this.client.call<Paths.SkyblockAuction.Get.Responses.$200>('skyblock/auction', options, { profile });
 	}
 
 	/**
@@ -49,13 +41,10 @@ export class SkyBlockAuction extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async uuid(
+	public uuid(
 		uuid: Paths.SkyblockAuction.Get.Parameters.Uuid,
 		options?: RequestOptions,
-	): Promise<ResultArray<Paths.SkyblockAuction.Get.Responses.$200, 'auctions'>> {
-		return getResultArray(
-			await this.client.call<Paths.SkyblockAuction.Get.Responses.$200>('skyblock/auction', options, { uuid }),
-			'auctions',
-		);
+	): Promise<Paths.SkyblockAuction.Get.Responses.$200> {
+		return this.client.call<Paths.SkyblockAuction.Get.Responses.$200>('skyblock/auction', options, { uuid });
 	}
 }

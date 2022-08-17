@@ -1,8 +1,6 @@
 import { Method } from '../util/Method';
-import { getResultObject } from '../util/ResultObject';
 import type { RequestOptions } from '../Client';
 import type { Components, Paths } from '../types/api';
-import type { ResultObject } from '../util/ResultObject';
 
 export class Player extends Method {
 	/**
@@ -14,15 +12,12 @@ export class Player extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async uuid(
+	public uuid(
 		uuid: Components.Parameters.PlayerUuid.Uuid,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Player.Get.Responses.$200, 'player'>> {
-		return getResultObject(
-			await this.client.call<Paths.Player.Get.Responses.$200>('player', options, {
-				uuid,
-			}),
-			'player',
-		) as never;
+	): Promise<Paths.Player.Get.Responses.$200> {
+		return this.client.call<Paths.Player.Get.Responses.$200>('player', options, {
+			uuid,
+		}) as never;
 	}
 }

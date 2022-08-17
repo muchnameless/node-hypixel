@@ -1,8 +1,6 @@
 import { Method } from '../util/Method';
-import { getResultObject } from '../util/ResultObject';
 import type { RequestOptions } from '../Client';
 import type { Paths } from '../types/api';
-import type { ResultObject } from '../util/ResultObject';
 
 export class Guild extends Method {
 	/**
@@ -13,16 +11,10 @@ export class Guild extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async id(
-		id: Paths.Guild.Get.Parameters.Id,
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Guild.Get.Responses.$200, 'guild'>> {
-		return getResultObject(
-			await this.client.call<Paths.Guild.Get.Responses.$200>('guild', options, {
-				id,
-			}),
-			'guild',
-		) as never;
+	public id(id: Paths.Guild.Get.Parameters.Id, options?: RequestOptions): Promise<Paths.Guild.Get.Responses.$200> {
+		return this.client.call<Paths.Guild.Get.Responses.$200>('guild', options, {
+			id,
+		}) as never;
 	}
 
 	/**
@@ -33,16 +25,13 @@ export class Guild extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async player(
+	public player(
 		player: Paths.Guild.Get.Parameters.Player,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Guild.Get.Responses.$200, 'guild'>> {
-		return getResultObject(
-			await this.client.call<Paths.Guild.Get.Responses.$200>('guild', options, {
-				player,
-			}),
-			'guild',
-		) as never;
+	): Promise<Paths.Guild.Get.Responses.$200> {
+		return this.client.call<Paths.Guild.Get.Responses.$200>('guild', options, {
+			player,
+		}) as never;
 	}
 
 	/**
@@ -53,15 +42,12 @@ export class Guild extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async name(
+	public name(
 		name: Paths.Guild.Get.Parameters.Name,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Guild.Get.Responses.$200, 'guild'>> {
-		return getResultObject(
-			await this.client.call<Paths.Guild.Get.Responses.$200>('guild', options, {
-				name,
-			}),
-			'guild',
-		) as never;
+	): Promise<Paths.Guild.Get.Responses.$200> {
+		return this.client.call<Paths.Guild.Get.Responses.$200>('guild', options, {
+			name,
+		}) as never;
 	}
 }

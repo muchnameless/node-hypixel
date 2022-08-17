@@ -1,8 +1,6 @@
 import { Method } from '../../util/Method';
-import { getResultObject } from '../../util/ResultObject';
 import type { RequestOptions } from '../../Client';
 import type { Paths } from '../../types/api';
-import type { ResultObject } from '../../util/ResultObject';
 
 export class SkyBlockResources extends Method {
 	/**
@@ -10,15 +8,10 @@ export class SkyBlockResources extends Method {
 	 * @return An object of [[Collection | Collection interface]] objects.
 	 * @category API
 	 */
-	public async collections(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesSkyblockCollections.Get.Responses.$200, 'collections'>> {
-		return getResultObject(
-			await this.client.call<Paths.ResourcesSkyblockCollections.Get.Responses.$200>(
-				'resources/skyblock/collections',
-				options,
-			),
-			'collections',
+	public collections(options?: RequestOptions): Promise<Paths.ResourcesSkyblockCollections.Get.Responses.$200> {
+		return this.client.call<Paths.ResourcesSkyblockCollections.Get.Responses.$200>(
+			'resources/skyblock/collections',
+			options,
 		);
 	}
 
@@ -26,25 +19,15 @@ export class SkyBlockResources extends Method {
 	 * Returns the current skills from the SkyBlock gamemode.
 	 * @category API
 	 */
-	public async skills(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesSkyblockSkills.Get.Responses.$200, 'collections'>> {
-		return getResultObject(
-			await this.client.call<Paths.ResourcesSkyblockSkills.Get.Responses.$200>('resources/skyblock/skills', options),
-			'collections',
-		);
+	public skills(options?: RequestOptions): Promise<Paths.ResourcesSkyblockSkills.Get.Responses.$200> {
+		return this.client.call<Paths.ResourcesSkyblockSkills.Get.Responses.$200>('resources/skyblock/skills', options);
 	}
 
 	/**
 	 * Returns the current items from the SkyBlock gamemode.
 	 * @category API
 	 */
-	public async items(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesSkyblockItems.Get.Responses.$200, 'items'>> {
-		return getResultObject(
-			await this.client.call<Paths.ResourcesSkyblockItems.Get.Responses.$200>('resources/skyblock/items', options),
-			'items',
-		);
+	public items(options?: RequestOptions): Promise<Paths.ResourcesSkyblockItems.Get.Responses.$200> {
+		return this.client.call<Paths.ResourcesSkyblockItems.Get.Responses.$200>('resources/skyblock/items', options);
 	}
 }

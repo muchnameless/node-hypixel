@@ -1,8 +1,6 @@
 import { Method } from '../util/Method';
-import { getResultObject } from '../util/ResultObject';
 import type { RequestOptions } from '../Client';
 import type { Components, Paths } from '../types/api';
-import type { ResultObject } from '../util/ResultObject';
 
 export class FindGuild extends Method {
 	/**
@@ -15,16 +13,13 @@ export class FindGuild extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async byName(
+	public byName(
 		name: Components.Parameters.ByGuildName.ByName,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.FindGuild.Get.Responses.$200, 'success'>> {
-		return getResultObject(
-			await this.client.call<Paths.Boosters.Get.Responses.$200>('findGuild', options, {
-				byName: name,
-			}),
-			'success',
-		) as never;
+	): Promise<Paths.FindGuild.Get.Responses.$200> {
+		return this.client.call<Paths.Boosters.Get.Responses.$200>('findGuild', options, {
+			byName: name,
+		}) as never;
 	}
 
 	/**
@@ -37,15 +32,12 @@ export class FindGuild extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async byUuid(
+	public byUuid(
 		uuid: Components.Parameters.ByUuid.ByUuid,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.FindGuild.Get.Responses.$200, 'success'>> {
-		return getResultObject(
-			await this.client.call<Paths.FindGuild.Get.Responses.$200>('findGuild', options, {
-				byUuid: uuid,
-			}),
-			'success',
-		) as never;
+	): Promise<Paths.FindGuild.Get.Responses.$200> {
+		return this.client.call<Paths.FindGuild.Get.Responses.$200>('findGuild', options, {
+			byUuid: uuid,
+		}) as never;
 	}
 }

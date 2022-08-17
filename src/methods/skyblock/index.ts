@@ -1,11 +1,7 @@
 import { Method } from '../../util/Method';
-import { getResultArray } from '../../util/ResultArray';
-import { getResultObject } from '../../util/ResultObject';
 import { SkyBlockAuction } from './auction';
 import { SkyBlockAuctions } from './auctions';
 import { SkyBlockProfiles } from './profiles';
-import type { ResultObject } from '../../util/ResultObject';
-import type { ResultArray } from '../../util/ResultArray';
 import type { Paths } from '../../types/api';
 import type { RequestOptions } from '../../Client';
 
@@ -40,13 +36,8 @@ export class SkyBlock extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async auctionsEnded(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.SkyblockAuctionsEnded.Get.Responses.$200, 'auctions'>> {
-		return getResultObject(
-			await this.client.call<Paths.SkyblockAuctionsEnded.Get.Responses.$200>('skyblock/auctions_ended', options),
-			'auctions',
-		);
+	public auctionsEnded(options?: RequestOptions): Promise<Paths.SkyblockAuctionsEnded.Get.Responses.$200> {
+		return this.client.call<Paths.SkyblockAuctionsEnded.Get.Responses.$200>('skyblock/auctions_ended', options);
 	}
 
 	/**
@@ -57,13 +48,8 @@ export class SkyBlock extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async bazaar(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.SkyblockBazaar.Get.Responses.$200, 'products'>> {
-		return getResultObject(
-			await this.client.call<Paths.SkyblockBazaar.Get.Responses.$200>('skyblock/bazaar', options),
-			'products',
-		);
+	public bazaar(options?: RequestOptions): Promise<Paths.SkyblockBazaar.Get.Responses.$200> {
+		return this.client.call<Paths.SkyblockBazaar.Get.Responses.$200>('skyblock/bazaar', options);
 	}
 
 	/**
@@ -74,11 +60,8 @@ export class SkyBlock extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async news(options?: RequestOptions): Promise<ResultArray<Paths.SkyblockNews.Get.Responses.$200, 'items'>> {
-		return getResultArray(
-			await this.client.call<Paths.SkyblockNews.Get.Responses.$200>('skyblock/news', options),
-			'items',
-		);
+	public news(options?: RequestOptions): Promise<Paths.SkyblockNews.Get.Responses.$200> {
+		return this.client.call<Paths.SkyblockNews.Get.Responses.$200>('skyblock/news', options);
 	}
 
 	/**
@@ -89,14 +72,11 @@ export class SkyBlock extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async profile(
+	public profile(
 		profile: Paths.SkyblockProfile.Get.Parameters.Profile,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.SkyblockProfile.Get.Responses.$200, 'profile'>> {
-		return getResultObject(
-			await this.client.call<Paths.SkyblockProfile.Get.Responses.$200>('skyblock/profile', options, { profile }),
-			'profile',
-		);
+	): Promise<Paths.SkyblockProfile.Get.Responses.$200> {
+		return this.client.call<Paths.SkyblockProfile.Get.Responses.$200>('skyblock/profile', options, { profile });
 	}
 
 	/**

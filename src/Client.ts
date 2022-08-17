@@ -13,8 +13,6 @@ import { Resources } from './methods/resources';
 import { SkyBlock } from './methods/skyblock';
 import { Status } from './methods/status';
 import { request } from './util/Request';
-import { getResultObject } from './util/ResultObject';
-import type { ResultObject } from './util/ResultObject';
 import type { IncomingHttpHeaders } from 'node:http';
 import type { Components, Paths } from './types/api';
 
@@ -224,8 +222,8 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public async boosters(options?: RequestOptions): Promise<ResultObject<Paths.Boosters.Get.Responses.$200, 'success'>> {
-		return getResultObject(await this.call<Paths.Boosters.Get.Responses.$200>('boosters', options), 'success');
+	public boosters(options?: RequestOptions): Promise<Paths.Boosters.Get.Responses.$200> {
+		return this.call<Paths.Boosters.Get.Responses.$200>('boosters', options);
 	}
 
 	/**
@@ -260,10 +258,8 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public async gameCounts(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.GameCounts.Get.Responses.$200, 'success'>> {
-		return getResultObject(await this.call<Paths.GameCounts.Get.Responses.$200>('gameCounts', options), 'success');
+	public gameCounts(options?: RequestOptions): Promise<Paths.GameCounts.Get.Responses.$200> {
+		return this.call<Paths.GameCounts.Get.Responses.$200>('gameCounts', options);
 	}
 
 	/**
@@ -285,8 +281,8 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public async key(options?: RequestOptions): Promise<ResultObject<Paths.Key.Get.Responses.$200, 'record'>> {
-		return getResultObject(await this.call<Paths.Key.Get.Responses.$200>('key', options), 'record');
+	public key(options?: RequestOptions): Promise<Paths.Key.Get.Responses.$200> {
+		return this.call<Paths.Key.Get.Responses.$200>('key', options);
 	}
 
 	/**
@@ -298,13 +294,8 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public async leaderboards(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Leaderboards.Get.Responses.$200, 'leaderboards'>> {
-		return getResultObject(
-			await this.call<Paths.Leaderboards.Get.Responses.$200>('leaderboards', options),
-			'leaderboards',
-		);
+	public leaderboards(options?: RequestOptions): Promise<Paths.Leaderboards.Get.Responses.$200> {
+		return this.call<Paths.Leaderboards.Get.Responses.$200>('leaderboards', options);
 	}
 
 	/**
@@ -327,10 +318,8 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public async playerCount(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.PlayerCount.Get.Responses.$200, 'success'>> {
-		return getResultObject(await this.call<Paths.PlayerCount.Get.Responses.$200>('playerCount', options), 'success');
+	public playerCount(options?: RequestOptions): Promise<Paths.PlayerCount.Get.Responses.$200> {
+		return this.call<Paths.PlayerCount.Get.Responses.$200>('playerCount', options);
 	}
 
 	/**
@@ -383,13 +372,8 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public async watchdogstats(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Watchdogstats.Get.Responses.$200, 'success'>> {
-		return getResultObject(
-			await this.call<Paths.Watchdogstats.Get.Responses.$200>('watchdogstats', options),
-			'success',
-		);
+	public watchdogstats(options?: RequestOptions): Promise<Paths.Watchdogstats.Get.Responses.$200> {
+		return this.call<Paths.Watchdogstats.Get.Responses.$200>('watchdogstats', options);
 	}
 
 	/**

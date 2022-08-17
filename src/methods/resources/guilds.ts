@@ -1,9 +1,5 @@
 import { Method } from '../../util/Method';
-import { getResultObject } from '../../util/ResultObject';
-import { getResultArray } from '../../util/ResultArray';
 import type { Paths } from '../../types/api';
-import type { ResultObject } from '../../util/ResultObject';
-import type { ResultArray } from '../../util/ResultArray';
 import type { RequestOptions } from '../../Client';
 
 export class GuildsResources extends Method {
@@ -15,15 +11,10 @@ export class GuildsResources extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async achievements(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesGuildsAchievements.Get.Responses.$200, 'tiered'>> {
-		return getResultObject(
-			await this.client.call<Paths.ResourcesGuildsAchievements.Get.Responses.$200>(
-				'resources/guilds/achievements',
-				options,
-			),
-			'tiered',
+	public achievements(options?: RequestOptions): Promise<Paths.ResourcesGuildsAchievements.Get.Responses.$200> {
+		return this.client.call<Paths.ResourcesGuildsAchievements.Get.Responses.$200>(
+			'resources/guilds/achievements',
+			options,
 		);
 	}
 
@@ -35,15 +26,10 @@ export class GuildsResources extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async permissions(
-		options?: RequestOptions,
-	): Promise<ResultArray<Paths.ResourcesGuildsPermissions.Get.Responses.$200, 'permissions'>> {
-		return getResultArray(
-			await this.client.call<Paths.ResourcesGuildsPermissions.Get.Responses.$200>(
-				'resources/guilds/permissions',
-				options,
-			),
-			'permissions',
+	public permissions(options?: RequestOptions): Promise<Paths.ResourcesGuildsPermissions.Get.Responses.$200> {
+		return this.client.call<Paths.ResourcesGuildsPermissions.Get.Responses.$200>(
+			'resources/guilds/permissions',
+			options,
 		);
 	}
 }

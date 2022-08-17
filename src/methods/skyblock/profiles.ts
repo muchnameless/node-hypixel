@@ -1,8 +1,6 @@
 import { Method } from '../../util/Method';
-import { getResultArray } from '../../util/ResultArray';
 import type { RequestOptions } from '../../Client';
 import type { Components, Paths } from '../../types/api';
-import type { ResultArray } from '../../util/ResultArray';
 
 export class SkyBlockProfiles extends Method {
 	/**
@@ -13,13 +11,10 @@ export class SkyBlockProfiles extends Method {
 	 * ```
 	 * @category API
 	 */
-	public async uuid(
+	public uuid(
 		uuid: Components.Parameters.PlayerUuidRequired.Uuid,
 		options?: RequestOptions,
-	): Promise<ResultArray<Paths.SkyblockProfiles.Get.Responses.$200, 'profiles'>> {
-		return getResultArray(
-			await this.client.call<Paths.SkyblockProfiles.Get.Responses.$200>('skyblock/profiles', options, { uuid }),
-			'profiles',
-		);
+	): Promise<Paths.SkyblockProfiles.Get.Responses.$200> {
+		return this.client.call<Paths.SkyblockProfiles.Get.Responses.$200>('skyblock/profiles', options, { uuid });
 	}
 }

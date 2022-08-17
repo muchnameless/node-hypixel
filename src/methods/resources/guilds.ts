@@ -17,13 +17,13 @@ export class GuildsResources extends Method {
 	 */
 	public async achievements(
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesGuildsAchievements.Get.Responses.$200, ['success', 'lastUpdated']>> {
+	): Promise<ResultObject<Paths.ResourcesGuildsAchievements.Get.Responses.$200, 'tiered'>> {
 		return getResultObject(
 			await this.client.call<Paths.ResourcesGuildsAchievements.Get.Responses.$200>(
 				'resources/guilds/achievements',
 				options,
 			),
-			['success', 'lastUpdated'],
+			'tiered',
 		);
 	}
 

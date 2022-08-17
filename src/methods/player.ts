@@ -17,12 +17,12 @@ export class Player extends Method {
 	public async uuid(
 		uuid: Components.Parameters.PlayerUuid.Uuid,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Player.Get.Responses.$200, ['player']>> {
+	): Promise<ResultObject<Paths.Player.Get.Responses.$200, 'player'>> {
 		return getResultObject(
 			await this.client.call<Paths.Player.Get.Responses.$200>('player', options, {
 				uuid,
 			}),
-			['player'],
+			'player',
 		) as never;
 	}
 }

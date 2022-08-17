@@ -17,12 +17,12 @@ export class Status extends Method {
 	public async uuid(
 		uuid: Components.Parameters.PlayerUuid.Uuid,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Status.Get.Responses.$200, ['session']>> {
+	): Promise<ResultObject<Paths.Status.Get.Responses.$200, 'session'>> {
 		return getResultObject(
 			await this.client.call<Paths.Status.Get.Responses.$200>('status', options, {
 				uuid,
 			}),
-			['session'],
+			'session',
 		) as never;
 	}
 }

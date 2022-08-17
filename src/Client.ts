@@ -224,10 +224,8 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public async boosters(
-		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Boosters.Get.Responses.$200, ['success']>> {
-		return getResultObject(await this.call<Paths.Boosters.Get.Responses.$200>('boosters', options), ['success']);
+	public async boosters(options?: RequestOptions): Promise<ResultObject<Paths.Boosters.Get.Responses.$200, 'success'>> {
+		return getResultObject(await this.call<Paths.Boosters.Get.Responses.$200>('boosters', options), 'success');
 	}
 
 	/**
@@ -264,8 +262,8 @@ export class Client extends EventEmitter {
 	 */
 	public async gameCounts(
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.GameCounts.Get.Responses.$200, ['success']>> {
-		return getResultObject(await this.call<Paths.GameCounts.Get.Responses.$200>('gameCounts', options), ['success']);
+	): Promise<ResultObject<Paths.GameCounts.Get.Responses.$200, 'success'>> {
+		return getResultObject(await this.call<Paths.GameCounts.Get.Responses.$200>('gameCounts', options), 'success');
 	}
 
 	/**
@@ -287,8 +285,8 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public async key(options?: RequestOptions): Promise<ResultObject<Paths.Key.Get.Responses.$200, ['record']>> {
-		return getResultObject(await this.call<Paths.Key.Get.Responses.$200>('key', options), ['record']);
+	public async key(options?: RequestOptions): Promise<ResultObject<Paths.Key.Get.Responses.$200, 'record'>> {
+		return getResultObject(await this.call<Paths.Key.Get.Responses.$200>('key', options), 'record');
 	}
 
 	/**
@@ -302,10 +300,11 @@ export class Client extends EventEmitter {
 	 */
 	public async leaderboards(
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Leaderboards.Get.Responses.$200, ['leaderboards']>> {
-		return getResultObject(await this.call<Paths.Leaderboards.Get.Responses.$200>('leaderboards', options), [
+	): Promise<ResultObject<Paths.Leaderboards.Get.Responses.$200, 'leaderboards'>> {
+		return getResultObject(
+			await this.call<Paths.Leaderboards.Get.Responses.$200>('leaderboards', options),
 			'leaderboards',
-		]);
+		);
 	}
 
 	/**
@@ -330,8 +329,8 @@ export class Client extends EventEmitter {
 	 */
 	public async playerCount(
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.PlayerCount.Get.Responses.$200, ['success']>> {
-		return getResultObject(await this.call<Paths.PlayerCount.Get.Responses.$200>('playerCount', options), ['success']);
+	): Promise<ResultObject<Paths.PlayerCount.Get.Responses.$200, 'success'>> {
+		return getResultObject(await this.call<Paths.PlayerCount.Get.Responses.$200>('playerCount', options), 'success');
 	}
 
 	/**
@@ -386,10 +385,11 @@ export class Client extends EventEmitter {
 	 */
 	public async watchdogstats(
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Watchdogstats.Get.Responses.$200, ['success']>> {
-		return getResultObject(await this.call<Paths.Watchdogstats.Get.Responses.$200>('watchdogstats', options), [
+	): Promise<ResultObject<Paths.Watchdogstats.Get.Responses.$200, 'success'>> {
+		return getResultObject(
+			await this.call<Paths.Watchdogstats.Get.Responses.$200>('watchdogstats', options),
 			'success',
-		]);
+		);
 	}
 
 	/**

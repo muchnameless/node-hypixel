@@ -12,13 +12,13 @@ export class SkyBlockResources extends Method {
 	 */
 	public async collections(
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesSkyblockCollections.Get.Responses.$200, ['collections']>> {
+	): Promise<ResultObject<Paths.ResourcesSkyblockCollections.Get.Responses.$200, 'collections'>> {
 		return getResultObject(
 			await this.client.call<Paths.ResourcesSkyblockCollections.Get.Responses.$200>(
 				'resources/skyblock/collections',
 				options,
 			),
-			['collections'],
+			'collections',
 		);
 	}
 
@@ -28,10 +28,10 @@ export class SkyBlockResources extends Method {
 	 */
 	public async skills(
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesSkyblockSkills.Get.Responses.$200, ['collections']>> {
+	): Promise<ResultObject<Paths.ResourcesSkyblockSkills.Get.Responses.$200, 'collections'>> {
 		return getResultObject(
 			await this.client.call<Paths.ResourcesSkyblockSkills.Get.Responses.$200>('resources/skyblock/skills', options),
-			['collections'],
+			'collections',
 		);
 	}
 
@@ -41,10 +41,10 @@ export class SkyBlockResources extends Method {
 	 */
 	public async items(
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesSkyblockItems.Get.Responses.$200, ['items']>> {
+	): Promise<ResultObject<Paths.ResourcesSkyblockItems.Get.Responses.$200, 'items'>> {
 		return getResultObject(
 			await this.client.call<Paths.ResourcesSkyblockItems.Get.Responses.$200>('resources/skyblock/items', options),
-			['items'],
+			'items',
 		);
 	}
 }

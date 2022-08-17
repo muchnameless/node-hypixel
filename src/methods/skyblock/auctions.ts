@@ -16,12 +16,12 @@ export class SkyBlockAuctions extends Method {
 	public async page(
 		page: Paths.SkyblockAuctions.Get.Parameters.Page = 0,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.SkyblockAuctions.Get.Responses.$200, ['success']>> {
+	): Promise<ResultObject<Paths.SkyblockAuctions.Get.Responses.$200, 'auctions'>> {
 		return getResultObject(
 			await this.client.call<Paths.SkyblockAuctions.Get.Responses.$200>('skyblock/auctions', options, {
 				page: page.toString(10),
 			}),
-			['success'],
+			'auctions',
 		);
 	}
 }

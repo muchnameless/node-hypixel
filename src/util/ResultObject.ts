@@ -12,72 +12,30 @@ import type { Components } from '../types/api';
  * // {success: true}
  * ```
  */
-export type ResultObject<T extends Components.Schemas.ApiSuccess, K extends (keyof T)[]> = (T[K[number]] extends
+export type ResultObject<T extends Components.Schemas.ApiSuccess, K extends keyof T> = (T[K] extends
 	| string
 	| number
 	| boolean
-	? Omit<T, K[number]>
-	: T[K[number]]) & {
-	meta: (T[K[number]] extends string | number | boolean ? Pick<T, K[number]> : Omit<T, K[number]>) & DefaultMeta;
+	? Omit<T, K>
+	: T[K]) & {
+	meta: (T[K] extends string | number | boolean ? Pick<T, K> : Omit<T, K>) & DefaultMeta;
 };
 
 /** @hidden */
-export function getResultObject<T extends Components.Schemas.ApiSuccess, K extends (keyof T)[]>(
+export function getResultObject<T extends Components.Schemas.ApiSuccess, K extends keyof T>(
 	response: T & DefaultMeta,
-	keys: K,
+	key: K,
 ): ResultObject<T, K> {
-	if (!keys.every((key) => key in response)) {
-		throw new TypeError(`One or more key in "${keys.join('"," ')}" was not in the response.`);
+	if (!(key in response)) {
+		throw new TypeError(`"${key as string}" was not in the response`);
 	}
 
-	const obj: ResultObject<T, K> = {} as ResultObject<T, K>;
-	const { ratelimit, cached, cloudflareCache } = response;
-	const meta: DefaultMeta & Record<string | number | symbol, unknown> = {};
-	if (cached) {
-		meta.cached = true;
-		delete response.cached;
-	}
-	if (cloudflareCache) {
-		meta.cloudflareCache = cloudflareCache;
-		delete response.cloudflareCache;
-	}
-	if (ratelimit) {
-		if (!cached && (!meta.cloudflareCache || meta.cloudflareCache.status !== 'HIT')) {
-			meta.ratelimit = ratelimit;
-		}
-		delete response.ratelimit;
-	}
+	const { [key]: obj = {}, ...meta } = response;
 
-	let assignedMeta = false;
-	for (const key of keys) {
-		const value = response[key];
-
-		if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-			delete response[key];
-			assignedMeta = true;
-			meta[key] = value;
-		}
-	}
-
-	if (assignedMeta) {
-		// we want the remainder merged into the object.
-		Object.assign(obj, response);
-		Object.defineProperty(obj, 'meta', {
-			enumerable: false,
-			value: meta,
-		});
-		return obj;
-	}
-
-	// we want all the keys merged with the root and the remainder assigned to meta.
-	for (const key of keys) {
-		Object.assign(obj, response[key]);
-		delete response[key];
-	}
-	Object.assign(meta, response);
 	Object.defineProperty(obj, 'meta', {
 		enumerable: false,
 		value: meta,
 	});
-	return obj;
+
+	return obj as ResultObject<T, K>;
 }

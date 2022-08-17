@@ -42,10 +42,10 @@ export class SkyBlock extends Method {
 	 */
 	public async auctionsEnded(
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.SkyblockAuctionsEnded.Get.Responses.$200, ['success']>> {
+	): Promise<ResultObject<Paths.SkyblockAuctionsEnded.Get.Responses.$200, 'auctions'>> {
 		return getResultObject(
 			await this.client.call<Paths.SkyblockAuctionsEnded.Get.Responses.$200>('skyblock/auctions_ended', options),
-			['success'],
+			'auctions',
 		);
 	}
 
@@ -59,10 +59,10 @@ export class SkyBlock extends Method {
 	 */
 	public async bazaar(
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.SkyblockBazaar.Get.Responses.$200, ['products']>> {
+	): Promise<ResultObject<Paths.SkyblockBazaar.Get.Responses.$200, 'products'>> {
 		return getResultObject(
 			await this.client.call<Paths.SkyblockBazaar.Get.Responses.$200>('skyblock/bazaar', options),
-			['products'],
+			'products',
 		);
 	}
 
@@ -92,10 +92,10 @@ export class SkyBlock extends Method {
 	public async profile(
 		profile: Paths.SkyblockProfile.Get.Parameters.Profile,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.SkyblockProfile.Get.Responses.$200, ['profile']>> {
+	): Promise<ResultObject<Paths.SkyblockProfile.Get.Responses.$200, 'profile'>> {
 		return getResultObject(
 			await this.client.call<Paths.SkyblockProfile.Get.Responses.$200>('skyblock/profile', options, { profile }),
-			['profile'],
+			'profile',
 		);
 	}
 

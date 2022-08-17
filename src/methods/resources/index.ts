@@ -17,10 +17,10 @@ export class Resources extends Method {
 	 */
 	public async achievements(
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesAchievements.Get.Responses.$200, ['achievements']>> {
+	): Promise<ResultObject<Paths.ResourcesAchievements.Get.Responses.$200, 'achievements'>> {
 		return getResultObject(
 			await this.client.call<Paths.ResourcesAchievements.Get.Responses.$200>('resources/achievements', options),
-			['achievements'],
+			'achievements',
 		);
 	}
 
@@ -34,10 +34,10 @@ export class Resources extends Method {
 	 */
 	public async challenges(
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesChallenges.Get.Responses.$200, ['challenges']>> {
+	): Promise<ResultObject<Paths.ResourcesChallenges.Get.Responses.$200, 'challenges'>> {
 		return getResultObject(
 			await this.client.call<Paths.ResourcesChallenges.Get.Responses.$200>('resources/challenges', options),
-			['challenges'],
+			'challenges',
 		);
 	}
 
@@ -51,10 +51,10 @@ export class Resources extends Method {
 	 */
 	public async quests(
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.ResourcesQuests.Get.Responses.$200, ['quests']>> {
+	): Promise<ResultObject<Paths.ResourcesQuests.Get.Responses.$200, 'quests'>> {
 		return getResultObject(
 			await this.client.call<Paths.ResourcesQuests.Get.Responses.$200>('resources/quests', options),
-			['quests'],
+			'quests',
 		);
 	}
 

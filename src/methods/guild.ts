@@ -16,12 +16,12 @@ export class Guild extends Method {
 	public async id(
 		id: Paths.Guild.Get.Parameters.Id,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Guild.Get.Responses.$200, ['guild']>> {
+	): Promise<ResultObject<Paths.Guild.Get.Responses.$200, 'guild'>> {
 		return getResultObject(
 			await this.client.call<Paths.Guild.Get.Responses.$200>('guild', options, {
 				id,
 			}),
-			['guild'],
+			'guild',
 		) as never;
 	}
 
@@ -36,12 +36,12 @@ export class Guild extends Method {
 	public async player(
 		player: Paths.Guild.Get.Parameters.Player,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Guild.Get.Responses.$200, ['guild']>> {
+	): Promise<ResultObject<Paths.Guild.Get.Responses.$200, 'guild'>> {
 		return getResultObject(
 			await this.client.call<Paths.Guild.Get.Responses.$200>('guild', options, {
 				player,
 			}),
-			['guild'],
+			'guild',
 		) as never;
 	}
 
@@ -56,12 +56,12 @@ export class Guild extends Method {
 	public async name(
 		name: Paths.Guild.Get.Parameters.Name,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.Guild.Get.Responses.$200, ['guild']>> {
+	): Promise<ResultObject<Paths.Guild.Get.Responses.$200, 'guild'>> {
 		return getResultObject(
 			await this.client.call<Paths.Guild.Get.Responses.$200>('guild', options, {
 				name,
 			}),
-			['guild'],
+			'guild',
 		) as never;
 	}
 }

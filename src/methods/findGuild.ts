@@ -18,12 +18,12 @@ export class FindGuild extends Method {
 	public async byName(
 		name: Components.Parameters.ByGuildName.ByName,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.FindGuild.Get.Responses.$200, ['success']>> {
+	): Promise<ResultObject<Paths.FindGuild.Get.Responses.$200, 'success'>> {
 		return getResultObject(
 			await this.client.call<Paths.Boosters.Get.Responses.$200>('findGuild', options, {
 				byName: name,
 			}),
-			['success'],
+			'success',
 		) as never;
 	}
 
@@ -40,12 +40,12 @@ export class FindGuild extends Method {
 	public async byUuid(
 		uuid: Components.Parameters.ByUuid.ByUuid,
 		options?: RequestOptions,
-	): Promise<ResultObject<Paths.FindGuild.Get.Responses.$200, ['success']>> {
+	): Promise<ResultObject<Paths.FindGuild.Get.Responses.$200, 'success'>> {
 		return getResultObject(
 			await this.client.call<Paths.FindGuild.Get.Responses.$200>('findGuild', options, {
 				byUuid: uuid,
 			}),
-			['success'],
+			'success',
 		) as never;
 	}
 }

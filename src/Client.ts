@@ -2,6 +2,7 @@ import { EventEmitter } from 'node:events';
 import { URL } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { AsyncQueue } from '@sapphire/async-queue';
+import { request } from 'undici';
 import { GenericHTTPError } from './errors/GenericHTTPError';
 import { InvalidKeyError } from './errors/InvalidKeyError';
 import { FindGuild } from './methods/findGuild';
@@ -12,9 +13,12 @@ import { RecentGames } from './methods/recentGames';
 import { Resources } from './methods/resources';
 import { SkyBlock } from './methods/skyblock';
 import { Status } from './methods/status';
-import { request } from './util/Request';
+import { RateLimitError } from './errors/RateLimitError';
 import type { IncomingHttpHeaders } from 'node:http';
 import type { Components, Paths } from './types/api';
+
+/** @internal */
+const CACHE_CONTROL_REGEX = /(?<=s-maxage=)\d+/;
 
 /** @internal */
 export interface ActionableCall<T extends Components.Schemas.ApiSuccess> {
@@ -461,14 +465,14 @@ export class Client extends EventEmitter {
 		}
 
 		return {
-			execute: this.callMethod.bind(this, path, auth, parameters, options?.signal),
+			execute: () => this.callMethod(path, auth, parameters, options?.signal),
 			retries: 0,
 			auth,
 		} as ActionableCall<T>;
 	}
 
 	/** @internal */
-	private callMethod<
+	private async callMethod<
 		T extends Components.Schemas.ApiSuccess & {
 			cause?: string;
 		} & { cloudflareCache?: DefaultMeta['cloudflareCache'] },
@@ -481,31 +485,83 @@ export class Client extends EventEmitter {
 			}
 		}
 
-		if (auth) {
-			url.searchParams.set('key', this.apiKey);
-		}
+		// @ts-expect-error AbortSignal
+		signal?.throwIfAborted();
 
-		return request({
-			url: url.toString(),
-			userAgent: this.userAgent,
-			timeout: this.timeout,
-			signal,
-			auth,
-			getRateLimitHeaders: this.getRateLimitHeaders.bind(this),
-		});
+		// internal AbortSignal (to have a timeout without having to abort the external signal)
+		const controller = new AbortController();
+		const listener = () => controller.abort();
+		const timeout = setTimeout(listener, this.timeout);
+
+		// external AbortSignal
+		// @ts-expect-error AbortSignal
+		signal?.addEventListener('abort', listener);
+
+		try {
+			const res = await request(url, {
+				method: 'GET',
+				headers: {
+					'API-Key': auth ? this.apiKey : undefined,
+					'User-Agent': this.userAgent,
+					Accept: 'application/json',
+				},
+			});
+
+			if (auth) this.getRateLimitHeaders(res.headers);
+
+			if (res.statusCode !== 200) {
+				res.body.dump();
+
+				if (res.statusCode === 429) {
+					throw new RateLimitError(`Hit key throttle`);
+				}
+
+				if (res.statusCode === 403) {
+					throw new InvalidKeyError('Invalid API Key');
+				}
+
+				throw new GenericHTTPError(
+					url,
+					res.statusCode,
+					// @ts-expect-error undici
+					res.statusMessage,
+				);
+			}
+
+			const parsed = await res.body.json();
+
+			if (res.headers['cf-cache-status']) {
+				const age = parseInt(res.headers.age as string, 10);
+				const maxAge = CACHE_CONTROL_REGEX.exec(res.headers['cache-control'] as string);
+				parsed.cloudflareCache = {
+					status: res.headers['cf-cache-status'] as never,
+					...(typeof age === 'number' && !Number.isNaN(age) && { age }),
+					...(res.headers['cf-cache-status'] === 'HIT' && (typeof age !== 'number' || Number.isNaN(age)) && { age: 0 }),
+					...(maxAge?.length &&
+						parseInt(maxAge[0], 10) > 0 && {
+							maxAge: parseInt(maxAge[0], 10),
+						}),
+				};
+			}
+
+			return parsed;
+		} finally {
+			clearTimeout(timeout);
+			// @ts-expect-error AbortSignal
+			signal?.removeEventListener('abort', listener);
+		}
 	}
 
 	/** @internal */
 	private getRateLimitHeaders(headers: IncomingHttpHeaders): void {
 		for (const key of Object.keys(this.rateLimit)) {
 			const headerKey = `ratelimit-${key}`;
+
 			if (headerKey in headers) {
-				if (key !== 'reset') {
-					this.rateLimit[key as keyof Client['rateLimit']] = parseInt(headers[headerKey] as string, 10);
-				} else {
-					this.rateLimit[key as keyof Client['rateLimit']] =
-						parseInt(headers[headerKey] as string, 10) * 1_000 + (Date.parse(headers.date as string) || Date.now());
-				}
+				this.rateLimit[key as keyof Client['rateLimit']] =
+					key !== 'reset'
+						? parseInt(headers[headerKey] as string, 10)
+						: parseInt(headers[headerKey] as string, 10) * 1_000 + (Date.parse(headers.date as string) || Date.now());
 			}
 		}
 	}

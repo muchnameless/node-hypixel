@@ -62,7 +62,7 @@ export interface NBTExtraAttributes {
 	/**
 	 * Each key is an enchantment type and the level. e.g. "telekinesis" or "impaling"
 	 */
-	enchantments: {
+	enchantments?: {
 		[name: string]: number;
 	};
 	hot_potato_count?: number;

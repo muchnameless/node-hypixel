@@ -2,9 +2,10 @@ import { EventEmitter } from 'node:events';
 import { URL } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { AsyncQueue } from '@sapphire/async-queue';
-import { request } from 'undici';
+import { fetch, type Headers } from 'undici';
 import { GenericHTTPError } from './errors/GenericHTTPError';
 import { InvalidKeyError } from './errors/InvalidKeyError';
+import { RateLimitError } from './errors/RateLimitError';
 import { FindGuild } from './methods/findGuild';
 import { Friends } from './methods/friends';
 import { Guild } from './methods/guild';
@@ -13,8 +14,7 @@ import { RecentGames } from './methods/recentGames';
 import { Resources } from './methods/resources';
 import { SkyBlock } from './methods/skyblock';
 import { Status } from './methods/status';
-import { RateLimitError } from './errors/RateLimitError';
-import type { IncomingHttpHeaders } from 'node:http';
+import { consumeBody } from './util/Fetch';
 import type { Components, Paths } from './types/api';
 
 /** @internal */
@@ -498,10 +498,10 @@ export class Client extends EventEmitter {
 		signal?.addEventListener('abort', listener);
 
 		try {
-			const res = await request(url, {
+			const res = await fetch(url, {
 				method: 'GET',
 				headers: {
-					'API-Key': auth ? this.apiKey : undefined,
+					'API-Key': auth ? this.apiKey : undefined!,
 					'User-Agent': this.userAgent,
 					Accept: 'application/json',
 				},
@@ -509,34 +509,37 @@ export class Client extends EventEmitter {
 
 			if (auth) this.getRateLimitHeaders(res.headers);
 
-			if (res.statusCode !== 200) {
-				res.body.dump();
-
-				if (res.statusCode === 429) {
+			switch (res.status) {
+				case 200:
+					break;
+			
+				case 429:
+					void consumeBody(res);
 					throw new RateLimitError(`Hit key throttle`);
-				}
 
-				if (res.statusCode === 403) {
+				case 403:
+					void consumeBody(res);
 					throw new InvalidKeyError('Invalid API Key');
-				}
 
-				throw new GenericHTTPError(
-					url,
-					res.statusCode,
-					// @ts-expect-error undici
-					res.statusMessage,
-				);
+				default:
+					void consumeBody(res);
+					throw new GenericHTTPError(
+						url,
+						res.status,
+						res.statusText,
+					);
 			}
 
-			const parsed = await res.body.json();
+			const parsed = await res.json() as T;
+			const status = res.headers.get('cf-cache-status');
 
-			if (res.headers['cf-cache-status']) {
-				const age = parseInt(res.headers.age as string, 10);
-				const maxAge = CACHE_CONTROL_REGEX.exec(res.headers['cache-control'] as string);
+			if (status) {
+				const age = parseInt(res.headers.get('age')!, 10);
+				const maxAge = CACHE_CONTROL_REGEX.exec(res.headers.get('cache-control')!);
 				parsed.cloudflareCache = {
-					status: res.headers['cf-cache-status'] as never,
+					status: status as never,
 					...(typeof age === 'number' && !Number.isNaN(age) && { age }),
-					...(res.headers['cf-cache-status'] === 'HIT' && (typeof age !== 'number' || Number.isNaN(age)) && { age: 0 }),
+					...(status === 'HIT' && (typeof age !== 'number' || Number.isNaN(age)) && { age: 0 }),
 					...(maxAge?.length &&
 						parseInt(maxAge[0], 10) > 0 && {
 							maxAge: parseInt(maxAge[0], 10),
@@ -553,15 +556,15 @@ export class Client extends EventEmitter {
 	}
 
 	/** @internal */
-	private getRateLimitHeaders(headers: IncomingHttpHeaders): void {
+	private getRateLimitHeaders(headers: Headers): void {
 		for (const key of Object.keys(this.rateLimit)) {
 			const headerKey = `ratelimit-${key}`;
 
 			if (headerKey in headers) {
 				this.rateLimit[key as keyof Client['rateLimit']] =
 					key !== 'reset'
-						? parseInt(headers[headerKey] as string, 10)
-						: parseInt(headers[headerKey] as string, 10) * 1_000 + (Date.parse(headers.date as string) || Date.now());
+						? parseInt(headers.get(headerKey)!, 10)
+						: parseInt(headers.get(headerKey)!, 10) * 1_000 + (Date.parse(headers.get('date')!) || Date.now());
 			}
 		}
 	}

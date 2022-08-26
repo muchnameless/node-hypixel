@@ -512,7 +512,7 @@ export class Client extends EventEmitter {
 			switch (res.status) {
 				case 200:
 					break;
-			
+
 				case 429:
 					void consumeBody(res);
 					throw new RateLimitError(`Hit key throttle`);
@@ -523,14 +523,10 @@ export class Client extends EventEmitter {
 
 				default:
 					void consumeBody(res);
-					throw new GenericHTTPError(
-						url,
-						res.status,
-						res.statusText,
-					);
+					throw new GenericHTTPError(url, res.status, res.statusText);
 			}
 
-			const parsed = await res.json() as T;
+			const parsed = (await res.json()) as T;
 			const status = res.headers.get('cf-cache-status');
 
 			if (status) {
@@ -558,13 +554,13 @@ export class Client extends EventEmitter {
 	/** @internal */
 	private getRateLimitHeaders(headers: Headers): void {
 		for (const key of Object.keys(this.rateLimit)) {
-			const headerKey = `ratelimit-${key}`;
+			const value = headers.get(`ratelimit-${key}`);
 
-			if (headerKey in headers) {
+			if (value) {
 				this.rateLimit[key as keyof Client['rateLimit']] =
 					key !== 'reset'
-						? parseInt(headers.get(headerKey)!, 10)
-						: parseInt(headers.get(headerKey)!, 10) * 1_000 + (Date.parse(headers.get('date')!) || Date.now());
+						? parseInt(value, 10)
+						: parseInt(value, 10) * 1_000 + (Date.parse(headers.get('date')!) || Date.now());
 			}
 		}
 	}

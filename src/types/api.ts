@@ -827,7 +827,7 @@ export declare namespace Components {
 			 */
 			PlayerUpcomingLanguageRelease;
 			plotResets?: PlayerPlotResets;
-			achievementPoints: number;
+			achievementPoints?: number;
 			achievementRewardsNew?: /* Object property keys are in the format "for_points_NUMBER". */ PlayerAchievementRewardsNew;
 			achievementSync?: PlayerAchievementSync;
 			achievementTotem?: PlayerAchievementTotem;

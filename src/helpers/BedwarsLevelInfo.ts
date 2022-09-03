@@ -7,13 +7,16 @@
  * For the original full copyright and license information, please view the LICENSE-HYPIXEL-PHP.md that was distributed with this source code.
  */
 
-import { MinecraftColorAsHex, MinecraftFormatting } from './MinecraftFormatting';
-import type { Components } from '../types/api';
+import { type Components } from '../types/api.js';
+import { MinecraftColorAsHex, MinecraftFormatting } from './MinecraftFormatting.js';
 
-/** @internal */
+/**
+ * @internal
+ */
 const enum BedwarsLevelConstants {
 	EL = 4,
-	XPP = 96 * 5000 + 7000,
+	// eslint-disable-next-line @typescript-eslint/prefer-literal-enum-member
+	XPP = 96 * 5_000 + 7_000,
 	LPP = 100,
 	HP = 10,
 }
@@ -23,15 +26,16 @@ const enum BedwarsLevelConstants {
  */
 export interface BedwarsLevelInfo {
 	level: number;
+	levelInCurrentPrestige: number;
 	prestige: number;
-	prestigeName: string;
 	prestigeColor: string;
 	prestigeColorHex: string;
-	levelInCurrentPrestige: number;
+	prestigeName: string;
 }
 
 /**
  * Calculates the BedWars prestige and level of a player and returns a {@link BedwarsLevelInfo} interface.
+ *
  * @category Helper
  */
 export function getBedwarsLevelInfo(data: Components.Schemas.Player | number): BedwarsLevelInfo {
@@ -40,12 +44,13 @@ export function getBedwarsLevelInfo(data: Components.Schemas.Player | number): B
 	if (typeof currentExp !== 'number' || Number.isNaN(currentExp)) {
 		throw new TypeError('Data supplied does not contain player Bedwars experience.');
 	}
+
 	const prestiges = Math.floor(currentExp / BedwarsLevelConstants.XPP);
 	let level = prestiges * BedwarsLevelConstants.LPP;
 	let expWithoutPrestiges = currentExp - prestiges * BedwarsLevelConstants.XPP;
-	for (let i = 1; i <= BedwarsLevelConstants.EL; i += 1) {
+	for (let index = 1; index <= BedwarsLevelConstants.EL; index += 1) {
 		let elExp = 500;
-		const rL = i % BedwarsLevelConstants.LPP;
+		const rL = index % BedwarsLevelConstants.LPP;
 
 		for (let ii = 0; ii < rL; ii += 1) {
 			elExp += ii * 500;
@@ -54,14 +59,17 @@ export function getBedwarsLevelInfo(data: Components.Schemas.Player | number): B
 		if (expWithoutPrestiges < elExp) {
 			break;
 		}
+
 		level += 1;
 		expWithoutPrestiges -= elExp;
 	}
-	level += Math.floor(expWithoutPrestiges / 5000);
+
+	level += Math.floor(expWithoutPrestiges / 5_000);
 	let prestige = Math.floor(level / BedwarsLevelConstants.LPP);
 	if (prestige > BedwarsLevelConstants.HP) {
 		prestige = BedwarsLevelConstants.HP;
 	}
+
 	let prestigeName = 'None';
 	let prestigeColor = MinecraftFormatting.GRAY;
 	switch (prestige) {
@@ -108,6 +116,7 @@ export function getBedwarsLevelInfo(data: Components.Schemas.Player | number): B
 		default:
 		// noop
 	}
+
 	const levelInCurrentPrestige = level - prestige * BedwarsLevelConstants.LPP;
 	return {
 		level,

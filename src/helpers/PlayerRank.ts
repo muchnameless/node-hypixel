@@ -1,7 +1,9 @@
-import { MinecraftColorAsHex, MinecraftFormatting } from './MinecraftFormatting';
-import type { Components } from '../types/api';
+import { type Components } from '../types/api.js';
+import { MinecraftColorAsHex, MinecraftFormatting } from './MinecraftFormatting.js';
 
-/** @internal */
+/**
+ * @internal
+ */
 export enum PlayerRanks {
 	NON_DONOR = 1,
 	VIP = 2,
@@ -21,21 +23,9 @@ export enum PlayerRanks {
  */
 export interface PlayerRank {
 	/**
-	 * The priority of this rank as it relates to other ranks.
-	 */
-	priority: number;
-	/**
-	 * Name of the rank as it appears in the data.
-	 */
-	name: string;
-	/**
 	 * Cleaned up version of the name.
 	 */
 	cleanName: string;
-	/**
-	 * The chat prefix with Minecraft formatting codes.
-	 */
-	prefix: string;
 	/**
 	 * The chat prefix _without_ Minecraft formatting codes.
 	 */
@@ -49,15 +39,6 @@ export interface PlayerRank {
 	 */
 	colorHex: MinecraftColorAsHex;
 	/**
-	 * If they have a custom color for their rank.
-	 * **Note:** this can be set when the player isn't MVP++. If you want to use this value, be sure to check if the rank is SUPERSTAR (MVP++).
-	 */
-	customRankColor?: MinecraftFormatting;
-	/**
-	 * Same as customRankColor, but the hex version of the color.
-	 */
-	customRankColorHex?: MinecraftColorAsHex;
-	/**
 	 * If they have a custom color for the pluses in their rank (++).
 	 * **Note:** this can be set when the player isn't MVP++. If you want to use this value, be sure to check if the rank is SUPERSTAR (MVP++).
 	 */
@@ -67,6 +48,27 @@ export interface PlayerRank {
 	 */
 	customPlusColorHex?: MinecraftColorAsHex;
 	/**
+	 * If they have a custom color for their rank.
+	 * **Note:** this can be set when the player isn't MVP++. If you want to use this value, be sure to check if the rank is SUPERSTAR (MVP++).
+	 */
+	customRankColor?: MinecraftFormatting;
+	/**
+	 * Same as customRankColor, but the hex version of the color.
+	 */
+	customRankColorHex?: MinecraftColorAsHex;
+	/**
+	 * Name of the rank as it appears in the data.
+	 */
+	name: string;
+	/**
+	 * The chat prefix with Minecraft formatting codes.
+	 */
+	prefix: string;
+	/**
+	 * The priority of this rank as it relates to other ranks.
+	 */
+	priority: number;
+	/**
 	 * Whether or not this is a staff only rank.
 	 */
 	staff: boolean;
@@ -74,6 +76,7 @@ export interface PlayerRank {
 
 /**
  * Get an {@link PlayerRank} object describing the player's rank in more detail without the need to figure out how to parse it yourself.
+ *
  * @param player The result of `client.player.uuid()`.
  * @param onlyPackages Whether to ignore their staff / youtube rank and only get their donor rank.
  * @category Helper
@@ -87,12 +90,14 @@ export function getPlayerRank(player: NonNullable<Components.Schemas.Player>, on
 				foundRank = rank;
 			}
 		}
+
 		if (player.newPackageRank) {
 			const rank = PlayerRanks[player.newPackageRank as keyof typeof PlayerRanks];
 			if (rank && rank > foundRank) {
 				foundRank = rank;
 			}
 		}
+
 		if (player.packageRank) {
 			const rank = PlayerRanks[player.packageRank as keyof typeof PlayerRanks];
 			if (rank && rank > foundRank) {
@@ -109,6 +114,7 @@ export function getPlayerRank(player: NonNullable<Components.Schemas.Player>, on
 	} else {
 		return getPlayerRank(player, true);
 	}
+
 	let out: PlayerRank;
 	switch (foundRank) {
 		case PlayerRanks.VIP:
@@ -244,6 +250,7 @@ export function getPlayerRank(player: NonNullable<Components.Schemas.Player>, on
 			};
 			break;
 	}
+
 	if (player.monthlyRankColor || player.rankPlusColor) {
 		const customRankColor = MinecraftFormatting[player.monthlyRankColor as keyof typeof MinecraftFormatting];
 		const customPlusColor = MinecraftFormatting[player.rankPlusColor as keyof typeof MinecraftFormatting];
@@ -251,13 +258,16 @@ export function getPlayerRank(player: NonNullable<Components.Schemas.Player>, on
 			out.customRankColor = customRankColor;
 			out.customRankColorHex = MinecraftColorAsHex[customRankColor as keyof typeof MinecraftColorAsHex];
 		}
+
 		if (customPlusColor) {
 			out.customPlusColor = customPlusColor;
 			out.customPlusColorHex = MinecraftColorAsHex[customPlusColor as keyof typeof MinecraftColorAsHex];
 		}
+
 		if (out.priority === PlayerRanks.SUPERSTAR) {
 			out.prefix = `${customRankColor ?? '§6'}[MVP${customPlusColor ?? '§c'}++${customRankColor ?? '§6'}]`;
 		}
 	}
+
 	return out;
 }

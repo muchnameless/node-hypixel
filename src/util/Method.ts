@@ -1,12 +1,18 @@
-import type { BaseClient } from './BaseClient';
+import { type BaseClient } from './BaseClient.js';
 
-/** @internal */
+/**
+ * @internal
+ */
 export abstract class Method {
-	/** @internal */
+	/**
+	 * @internal
+	 */
 	protected client: BaseClient;
 
-	/** @internal */
-	constructor(client: BaseClient) {
+	/**
+	 * @internal
+	 */
+	public constructor(client: BaseClient) {
 		this.client = client;
 	}
 }

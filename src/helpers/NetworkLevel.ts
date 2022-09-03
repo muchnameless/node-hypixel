@@ -7,31 +7,35 @@
  * For the original full copyright and license information, please view the LICENSE-HYPIXEL-PHP.md that was distributed with this source code.
  */
 
-import type { Components } from '../types/api';
+import { type Components } from '../types/api.js';
 
 /**
  * Describes the results from a {@link getNetworkLevel} function call.
  */
 export interface NetworkLevel {
-	level: number;
-	preciseLevel: number;
 	currentExp: number;
 	expToLevel: number;
 	expToNextLevel: number;
+	level: number;
+	preciseLevel: number;
 	remainingExpToNextLevel: number;
 }
 
-/** @internal */
+/**
+ * @internal
+ */
 enum NETWORK_LEVEL_CONSTANTS {
-	START = 10000,
-	GROWTH = 2500,
-	RPQP = (() =>
-		-(NETWORK_LEVEL_CONSTANTS.START - 0.5 * NETWORK_LEVEL_CONSTANTS.GROWTH) / NETWORK_LEVEL_CONSTANTS.GROWTH)(),
-	IPQP = (() => NETWORK_LEVEL_CONSTANTS.RPQP * NETWORK_LEVEL_CONSTANTS.RPQP)(),
+	START = 10_000,
+	GROWTH = 2_500,
+	// eslint-disable-next-line @typescript-eslint/prefer-literal-enum-member
+	RPQP = (() => -(START - 0.5 * GROWTH) / GROWTH)(),
+	// eslint-disable-next-line @typescript-eslint/prefer-literal-enum-member
+	IPQP = (() => RPQP * RPQP)(),
 }
 
 /**
  * Calculates the total EXP required for a specific network level.
+ *
  * @param level Level you're getting the EXP required for. Can be a float or an integer.
  * @category Helper
  */
@@ -42,11 +46,13 @@ export function getExpFromNetworkLevel(level: number): number {
 	if (flooredLevel === level) {
 		return expToFlooredLevel;
 	}
+
 	return (getExpFromNetworkLevel(flooredLevel + 1) - expToFlooredLevel) * (level % 1) + expToFlooredLevel;
 }
 
 /**
  * Calculates the network level and returns a {@link NetworkLevel} interface.
+ *
  * @param data The player object or the raw EXP number.
  * @category Helper
  */
@@ -57,6 +63,7 @@ export function getNetworkLevel(data: Components.Schemas.Player | number): Netwo
 	} else {
 		currentExp = data.networkExp ?? 0;
 	}
+
 	if (currentExp < 0) currentExp = 0;
 
 	const level = Math.floor(

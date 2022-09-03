@@ -1,4 +1,5 @@
-import { parse } from '../util/NBT';
+import { Buffer } from 'node:buffer';
+import { parse } from '../util/NBT.js';
 
 /**
  * Array of inventory slots. If that slot is empty it will be null, otherwise it will be an object containing the data.
@@ -9,12 +10,18 @@ export type NBTInventory = (NBTInventoryItem | null)[];
  * The NBT information for a slot in the inventory you are reading.
  */
 export interface NBTInventoryItem {
-	/** Minecraft Item ID of this item. */
-	id: number;
-	/** Amount of items in this inventory slot. */
+	/**
+	 * Amount of items in this inventory slot.
+	 */
 	Count: number;
 	Damage: number;
-	/** NBT tag data for this item. */
+	/**
+	 * Minecraft Item ID of this item.
+	 */
+	id: number;
+	/**
+	 * NBT tag data for this item.
+	 */
 	tag?: NBTTag;
 }
 
@@ -22,13 +29,13 @@ export interface NBTInventoryItem {
  * If an inventory slot contains tag data, this interface describes possible values commonly seen in observations of the inventory data.
  */
 export interface NBTTag {
-	Unbreakable?: number;
-	HideFlags?: number;
-	display?: NBTDisplay;
-	ExtraAttributes?: NBTExtraAttributes;
-	ench?: NBTEnch[];
-	SkullOwner?: NBTSkullOwner;
 	CustomPotionEffects?: NBTCustomPotionEffect[];
+	ExtraAttributes?: NBTExtraAttributes;
+	HideFlags?: number;
+	SkullOwner?: NBTSkullOwner;
+	Unbreakable?: number;
+	display?: NBTDisplay;
+	ench?: NBTEnch[];
 }
 
 /**
@@ -45,58 +52,70 @@ export interface NBTDisplay {
  */
 export interface NBTExtraAttributes {
 	[key: string]:
-		| string
-		| number
-		| number[]
-		| { [name: string]: number }
 		| NBTExtraAttributesPotionEffect[]
 		| NBTInventory
+		| number[]
+		| number
+		| string
+		| { [name: string]: number }
 		| undefined;
-	id: string;
-	uuid?: string;
-	timestamp?: string;
-	originTag?: string;
-	modifier?: string;
-	color?: string;
 	anvil_uses?: number;
+	backpack_color?: string;
+	color?: string;
+	dungeon_item_level?: number;
+	effects?: NBTExtraAttributesPotionEffect[];
 	/**
 	 * Each key is an enchantment type and the level. e.g. "telekinesis" or "impaling"
 	 */
 	enchantments?: {
 		[name: string]: number;
 	};
-	hot_potato_count?: number;
-	rarity_upgrades?: number;
-	dungeon_item_level?: number;
-	backpack_color?: string;
-	runes?: { [name: string]: number };
-	potion_level?: number;
-	potion?: string;
-	effects?: NBTExtraAttributesPotionEffect[];
-	potion_type?: string;
-	splash?: number;
-	potion_name?: string;
-	/** The contents of the backpack. */
-	small_backpack_data?: NBTInventory;
-	/** The contents of the backpack. */
-	medium_backpack_data?: NBTInventory;
-	/** The contents of the backpack. */
-	large_backpack_data?: NBTInventory;
-	/** The contents of the backpack. */
+	/**
+	 * The contents of the backpack.
+	 */
 	greater_backpack_data?: NBTInventory;
-	/** The contents of the backpack. */
+	hot_potato_count?: number;
+	id: string;
+	/**
+	 * The contents of the backpack.
+	 */
 	jumbo_backpack_data?: NBTInventory;
-	/** The contents of the cake bag. */
+	/**
+	 * The contents of the backpack.
+	 */
+	large_backpack_data?: NBTInventory;
+	/**
+	 * The contents of the backpack.
+	 */
+	medium_backpack_data?: NBTInventory;
+	modifier?: string;
+	/**
+	 * The contents of the cake bag.
+	 */
 	new_year_cake_bag_data?: NBTInventory;
+	originTag?: string;
+	potion?: string;
+	potion_level?: number;
+	potion_name?: string;
+	potion_type?: string;
+	rarity_upgrades?: number;
+	runes?: { [name: string]: number };
+	/**
+	 * The contents of the backpack.
+	 */
+	small_backpack_data?: NBTInventory;
+	splash?: number;
+	timestamp?: string;
+	uuid?: string;
 }
 
 /**
  * If the inventory item is a potion, this property will describe the effects of that potion.
  */
 export interface NBTExtraAttributesPotionEffect {
-	level: number;
-	effect: string;
 	duration_ticks: number;
+	effect: string;
+	level: number;
 }
 
 /**
@@ -111,23 +130,25 @@ export interface NBTEnch {
  * If the {@link NBTInventoryItem} is a skull type this will describe it's skull information.
  */
 export interface NBTSkullOwner {
+	/**
+	 * If the original textures array had more than 1 element, the first will appear under Properties and the remainder will appear in this array below.
+	 */
+	ExtraProperties?: NonNullable<NBTSkullOwner['Properties']>[];
 	Id: string;
 	Properties: {
-		timestamp?: number;
 		profileId?: number;
 		profileName?: number;
 		signatureRequired?: boolean;
 		textures: {
 			SKIN: {
-				/** Minecraft CDN link to the texture. */
+				/**
+				 * Minecraft CDN link to the texture.
+				 */
 				url: string;
 			};
 		};
+		timestamp?: number;
 	} | null;
-	/**
-	 * If the original textures array had more than 1 element, the first will appear under Properties and the remainder will appear in this array below.
-	 */
-	ExtraProperties?: NonNullable<NBTSkullOwner['Properties']>[];
 }
 
 /**
@@ -135,13 +156,14 @@ export interface NBTSkullOwner {
  */
 export interface NBTCustomPotionEffect {
 	Ambient: number;
+	Amplifier: number;
 	Duration: number;
 	Id: number;
-	Amplifier: number;
 }
 
 /**
  * This helper will transform NBT data into a typed object using prismarine-nbt. It will also transform any backpacks/bags with item data so you can explore those as well.
+ *
  * @param value A Base64 item data string, NBT byte array, or buffer. If Deno, no Buffer but a Uint8Array is supported.
  * @category Helper
  */
@@ -152,6 +174,7 @@ export async function transformItemData(value: Parameters<typeof parse>[number])
 			if (Object.entries(item).length === 0) {
 				return null;
 			}
+
 			/* istanbul ignore else */
 			if (item.tag) {
 				if (item.tag.SkullOwner) {
@@ -172,6 +195,7 @@ export async function transformItemData(value: Parameters<typeof parse>[number])
 						item.tag.SkullOwner.Properties = null;
 					}
 				}
+
 				if (item.tag.ExtraAttributes) {
 					const extraAttributes = item.tag.ExtraAttributes as NBTExtraAttributes;
 					await Promise.all(
@@ -184,6 +208,7 @@ export async function transformItemData(value: Parameters<typeof parse>[number])
 					);
 				}
 			}
+
 			return item;
 		}),
 	);

@@ -1,19 +1,18 @@
-import { transformItemData } from './TransformItemData';
-import type { Components } from '../types/api';
-import type { NBTInventory } from './TransformItemData';
+import { type Components } from '../types/api.js';
+import { transformItemData, type NBTInventory } from './TransformItemData.js';
 
 /**
  * Interface used in the {@link SkyBlockProfileMemberWithTransformedInventories} intersection to describe the intellisense for the inventory after being transformed.
  */
 export interface SkyBlockProfileTransformedInventories {
-	inv_armor: NBTInventory;
 	backpack_contents?: NBTInventory;
 	backpack_icons?: NBTInventory;
 	candy_inventory_contents?: NBTInventory;
 	ender_chest_contents?: NBTInventory;
-	personal_vault_contents?: NBTInventory;
 	fishing_bag?: NBTInventory;
+	inv_armor: NBTInventory;
 	inv_contents?: NBTInventory;
+	personal_vault_contents?: NBTInventory;
 	potion_bag?: NBTInventory;
 	quiver?: NBTInventory;
 	talisman_bag?: NBTInventory;
@@ -29,7 +28,9 @@ export type SkyBlockProfileMemberWithTransformedInventories = Omit<
 > &
 	SkyBlockProfileTransformedInventories;
 
-/** @internal */
+/**
+ * @internal
+ */
 const SKYBLOCK_INVENTORIES: (keyof SkyBlockProfileTransformedInventories)[] = [
 	'inv_armor',
 	'backpack_contents',
@@ -47,6 +48,7 @@ const SKYBLOCK_INVENTORIES: (keyof SkyBlockProfileTransformedInventories)[] = [
 
 /**
  * This helper will loop over all the possible inventories on a profile and run the {@link transformSkyBlockItemData} helper on them, returning the member object with the transformed properties.
+ *
  * @param member The profile member object that you want to transform the inventory data of.
  * @category Helper
  */
@@ -60,8 +62,8 @@ export async function transformSkyBlockProfileMemberInventories(
 			if (inventoryData?.data) {
 				try {
 					transformedMember[key] = await transformItemData(inventoryData.data);
-				} catch (e) {
-					/* istanbul ignore next */
+				} catch {
+					// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 					delete transformedMember[key];
 				}
 			}

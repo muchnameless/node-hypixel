@@ -1,6 +1,8 @@
-/** @hidden */
+/**
+ * @hidden
+ */
 enum ROMAN_NUMERALS {
-	M = 1000,
+	M = 1_000,
 	CM = 900,
 	D = 500,
 	CD = 400,
@@ -17,6 +19,7 @@ enum ROMAN_NUMERALS {
 
 /**
  * Quick helper function that will help you convert a number to a roman numeral for display purposes.
+ *
  * @param value The number you want to convert to a roman numeral.
  * @category Helper
  */

@@ -7,25 +7,26 @@
  * For the original full copyright and license information, please view the LICENSE-HYPIXEL-PHP.md that was distributed with this source code.
  */
 
-import { getSkyWarsPrestigeForLevel, SkyWarsPrestiges } from './SkyWarsPrestige';
-import type { Components } from '../types/api';
-import type { SkyWarsPrestige } from './SkyWarsPrestige';
+import { type Components } from '../types/api.js';
+import { getSkyWarsPrestigeForLevel, SkyWarsPrestiges, type SkyWarsPrestige } from './SkyWarsPrestige.js';
 
-/** @internal */
+/**
+ * @internal
+ */
 const skyWarsLevelConstants = {
-	expPerLevel: 10000,
-	easyLevelExp: [0, 20, 50, 80, 100, 250, 500, 1000, 1500, 2500, 4000, 5000],
+	expPerLevel: 10_000,
+	easyLevelExp: [0, 20, 50, 80, 100, 250, 500, 1_000, 1_500, 2_500, 4_000, 5_000],
 };
 
 /**
  * Interface describing the results from the {@link getSkyWarsLevelInfo} function.
  */
 export interface SkyWarsLevelInfo {
-	level: number;
-	preciseLevel: number;
 	currentExp: number;
 	expToLevel: number;
 	expToNextLevel: number;
+	level: number;
+	preciseLevel: number;
 	remainingExpToNextLevel: number;
 }
 
@@ -33,23 +34,24 @@ export interface SkyWarsLevelInfo {
  * This interface is returned by {@link getSkyWarsLevelInfo} if you passed true as the second parameter.
  */
 export interface SkyWarsLevelInfoAndPrestige extends SkyWarsLevelInfo {
-	prestige: SkyWarsPrestige;
+	expToNextPrestige?: number;
 	expToPrestige: number;
 	nextPrestige?: SkyWarsPrestige;
-	expToNextPrestige?: number;
-	remainingExpToNextPrestige?: number;
+	prestige: SkyWarsPrestige;
 	progressToNextPrestige?: number;
+	remainingExpToNextPrestige?: number;
 }
 
 /**
  * Returns the total amount of exp it takes to get to a certain level.
+ *
  * @param level The level of the player.
  */
 export function totalExpToSkyWarsLevel(level: number): number {
 	let acc = 0;
 	const easyLevelCount = Math.min(level, skyWarsLevelConstants.easyLevelExp.length);
-	for (let i = 0; i < easyLevelCount; i += 1) {
-		acc += skyWarsLevelConstants.easyLevelExp[i];
+	for (let index = 0; index < easyLevelCount; index += 1) {
+		acc += skyWarsLevelConstants.easyLevelExp[index];
 	}
 
 	return level <= skyWarsLevelConstants.easyLevelExp.length
@@ -59,20 +61,23 @@ export function totalExpToSkyWarsLevel(level: number): number {
 
 /**
  * Get SkyWars level information from a {@link Components.Schemas.Player} object or raw experience value.
+ *
  * @param data A {@link Components.Schemas.Player} object or the raw experience value.
  * @param includePrestige Whether or not to return the {@link SkyWarsPrestige} object.
  * @category Helper
  */
-export function getSkyWarsLevelInfo(data: Components.Schemas.Player | number): SkyWarsLevelInfo;
+export function getSkyWarsLevelInfo(
+	data: Components.Schemas.Player | number,
+	includePrestige?: false,
+): SkyWarsLevelInfo;
 export function getSkyWarsLevelInfo(
 	data: Components.Schemas.Player | number,
 	includePrestige: true,
 ): SkyWarsLevelInfoAndPrestige;
-export function getSkyWarsLevelInfo(data: Components.Schemas.Player | number, includePrestige: false): SkyWarsLevelInfo;
 export function getSkyWarsLevelInfo(
 	data: Components.Schemas.Player | number,
 	includePrestige?: boolean,
-): SkyWarsLevelInfoAndPrestige | SkyWarsLevelInfo {
+): SkyWarsLevelInfo | SkyWarsLevelInfoAndPrestige {
 	const currentExp = typeof data === 'number' ? data : (data.stats.SkyWars?.skywars_experience as number);
 	if (typeof currentExp !== 'number' || Number.isNaN(currentExp)) {
 		throw new TypeError('Data supplied does not contain player SkyWars experience.');
@@ -80,20 +85,22 @@ export function getSkyWarsLevelInfo(
 
 	let expAcc = 0;
 	let level = -1;
-	for (let i = 0; i < skyWarsLevelConstants.easyLevelExp.length; i += 1) {
-		const expPerLevel = skyWarsLevelConstants.easyLevelExp[i];
+	for (let index = 0; index < skyWarsLevelConstants.easyLevelExp.length; index += 1) {
+		const expPerLevel = skyWarsLevelConstants.easyLevelExp[index];
 		expAcc += expPerLevel;
 		if (currentExp < expAcc) {
-			level = i;
+			level = index;
 			expAcc -= expPerLevel;
 			break;
 		}
 	}
+
 	if (level === -1) {
 		level =
 			skyWarsLevelConstants.easyLevelExp.length + Math.floor((currentExp - expAcc) / skyWarsLevelConstants.expPerLevel);
 		expAcc += (level - skyWarsLevelConstants.easyLevelExp.length) * skyWarsLevelConstants.expPerLevel;
 	}
+
 	const expToLevel = expAcc;
 	const nextLevelExp =
 		expToLevel +
@@ -123,6 +130,7 @@ export function getSkyWarsLevelInfo(
 	if (prestigeIndex + 1 === SkyWarsPrestiges.length) {
 		return info;
 	}
+
 	info.nextPrestige = SkyWarsPrestiges[prestigeIndex + 1];
 	info.expToNextPrestige = totalExpToSkyWarsLevel(info.nextPrestige.minimumLevel);
 	info.remainingExpToNextPrestige = info.expToNextPrestige - info.currentExp;

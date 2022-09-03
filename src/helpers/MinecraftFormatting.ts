@@ -1,3 +1,4 @@
+/* eslint-disable typescript-sort-keys/string-enum */
 /**
  * An enum describing color names and their Minecraft format variants.
  */
@@ -25,6 +26,7 @@ export enum MinecraftFormatting {
 	RESET = '§r',
 	MAGIC = '§k',
 }
+/* eslint-enable typescript-sort-keys/string-enum */
 
 /**
  * An enum that'll let you you get a hex color code for a specific Minecraft color formatting sequence.
@@ -48,11 +50,14 @@ export enum MinecraftColorAsHex {
 	'§f' = 'FFFFFF',
 }
 
-/** @internal */
-const REMOVE_FORMATTING_REGEX = /§[0-9a-flmnokr]/gi;
+/**
+ * @internal
+ */
+const REMOVE_FORMATTING_REGEX = /§[\da-fk-or]/gi;
 
 /**
  * This helper will take a string and remove any of Minecraft's formatting sequence. Useful when parsing item lore or similar elements.
+ *
  * @param value Any string with minecraft formatting.
  * @category Helper
  */

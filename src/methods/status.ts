@@ -1,10 +1,11 @@
-import { Method } from '../util/Method';
-import type { RequestOptions } from '../Client';
-import type { Components, Paths } from '../types/api';
+import { type RequestOptions } from '../Client.js';
+import { type Components, type Paths } from '../types/api.js';
+import { Method } from '../util/Method.js';
 
 export class Status extends Method {
 	/**
 	 * Returns online status information for given player, including game, mode and map when available.
+	 *
 	 * @example
 	 * ```typescript
 	 * const response = await client.status.uuid("20934ef9488c465180a78f861586b4cf");
@@ -12,7 +13,7 @@ export class Status extends Method {
 	 * ```
 	 * @category API
 	 */
-	public uuid(
+	public async uuid(
 		uuid: Components.Parameters.PlayerUuid.Uuid,
 		options?: RequestOptions,
 	): Promise<Paths.Status.Get.Responses.$200> {

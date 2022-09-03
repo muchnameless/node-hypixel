@@ -1,65 +1,25 @@
 {
-  "env": {
-    "es6": true,
-    "node": true
-  },
-  "extends": [
-    "eslint:recommended",
-    "plugin:prettier/recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
-],
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": "./tsconfig.json"
-  },
-  "plugins": ["@typescript-eslint", "import"],
-  "settings": {
-    "react": {
-      "version": "999.999.999"
-    }
-  },
-  "rules": {
-    "camelcase": 0,
-    "import/prefer-default-export": 0,
-    "import/default": 0,
-		"import/no-unresolved": 0,
-		"import/order": [
-			1,
-			{
-				"pathGroups": [
-					{
-						"pattern": "^#",
-						"group": "internal"
-					}
-				],
-				"pathGroupsExcludedImportTypes": ["internal", "external", "builtins"],
-				"groups": ["builtin", "external", "unknown", "parent", "sibling", "internal", "index", "object", "type"]
-			}
-		],
-    "lines-between-class-members": 0,
-    "no-shadow": 0,
-    "@typescript-eslint/no-namespace": 0,
-    "@typescript-eslint/no-shadow": 2,
-    "no-param-reassign": [
-      2,
-      {
-        "props": false
-      }
-    ],
-    "no-unused-vars": 0,
-    "@typescript-eslint/no-unused-vars": 2,
-    "no-use-before-define": 0,
-    "@typescript-eslint/consistent-type-imports": 1,
-    "@typescript-eslint/no-use-before-define": [
-      2,
-      {
-        "ignoreTypeReferences": true
-      }
-    ]
-  }
+	"extends": ["neon/common", "neon/node", "neon/typescript", "neon/prettier"],
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"project": "./tsconfig.json",
+		"extraFileExtensions": [".mjs"]
+	},
+	"ignorePatterns": ["node_modules/", "dist/", "tests/"],
+	"rules": {
+		"@typescript-eslint/consistent-type-definitions": 0,
+		"@typescript-eslint/no-base-to-string": 0,
+		"@typescript-eslint/no-throw-literal": 0,
+		"@typescript-eslint/restrict-plus-operands": 0,
+		"curly": [2, "multi-line", "consistent"],
+		"jsdoc/check-param-names": 0,
+		"prefer-named-capture-group": 0,
+		"prefer-promise-reject-errors": 0,
+		"promise/prefer-await-to-callbacks": 0,
+		"promise/prefer-await-to-then": 0,
+		"require-atomic-updates": 0,
+		"sonarjs/no-nested-switch": 0,
+		"tsdoc/syntax": 0,
+		"unicorn/no-unsafe-regex": 0
+	}
 }

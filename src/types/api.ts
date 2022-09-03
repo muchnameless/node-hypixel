@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/sort-type-union-intersection-members, jsdoc/check-alignment, jsdoc/no-multi-asterisks, typescript-sort-keys/interface */
+
 export declare namespace Components {
 	namespace Parameters {
 		namespace ByGuildName {

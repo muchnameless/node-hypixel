@@ -1,35 +1,46 @@
 import { EventEmitter } from 'node:events';
-import { URL } from 'node:url';
+import { clearTimeout, setTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
+import { URL } from 'node:url';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { fetch, type Headers } from 'undici';
-import { GenericHTTPError } from './errors/GenericHTTPError';
-import { InvalidKeyError } from './errors/InvalidKeyError';
-import { RateLimitError } from './errors/RateLimitError';
-import { FindGuild } from './methods/findGuild';
-import { Friends } from './methods/friends';
-import { Guild } from './methods/guild';
-import { Player } from './methods/player';
-import { RecentGames } from './methods/recentGames';
-import { Resources } from './methods/resources';
-import { SkyBlock } from './methods/skyblock';
-import { Status } from './methods/status';
-import { consumeBody } from './util/Fetch';
-import type { Components, Paths } from './types/api';
+import { GenericHTTPError } from './errors/GenericHTTPError.js';
+import { InvalidKeyError } from './errors/InvalidKeyError.js';
+import { RateLimitError } from './errors/RateLimitError.js';
+import { FindGuild } from './methods/findGuild.js';
+import { Friends } from './methods/friends.js';
+import { Guild } from './methods/guild.js';
+import { Player } from './methods/player.js';
+import { RecentGames } from './methods/recentGames.js';
+import { Resources } from './methods/resources/index.js';
+import { SkyBlock } from './methods/skyblock/index.js';
+import { Status } from './methods/status.js';
+import { type Components, type Paths } from './types/api.js';
+import { consumeBody } from './util/Fetch.js';
 
-/** @internal */
+/**
+ * @internal
+ */
 const CACHE_CONTROL_REGEX = /(?<=s-maxage=)\d+/;
 
-/** @internal */
+/**
+ * @internal
+ */
 export interface ActionableCall<T extends Components.Schemas.ApiSuccess> {
-	execute: () => Promise<T>;
-	retries: number;
 	auth: boolean;
+	execute(): Promise<T>;
+	retries: number;
 	signal: AbortSignal;
 }
 
-/** @hidden */
+/**
+ * @hidden
+ */
 export interface RateLimitData {
+	/**
+	 * How many requests per minute your API key can make.
+	 */
+	limit: number;
 	/**
 	 * Remaining API calls until the limit resets.
 	 */
@@ -38,20 +49,12 @@ export interface RateLimitData {
 	 * Time, in seconds, until remaining resets to limit.
 	 */
 	reset: number;
-	/**
-	 * How many requests per minute your API key can make.
-	 */
-	limit: number;
 }
 
 /**
  * Possible meta options returned on the meta variable.
  */
 export interface DefaultMeta {
-	/**
-	 * If this request required an API key it returned rate limit information in the headers, which is included here.
-	 */
-	ratelimit?: RateLimitData;
 	/**
 	 * If you included a cache get/set method in the options, this value will be set to true if that cache was hit.
 	 */
@@ -61,10 +64,6 @@ export interface DefaultMeta {
 	 */
 	cloudflareCache?: {
 		/**
-		 * Cloudflare cache status.
-		 */
-		status: 'HIT' | 'MISS' | 'BYPASS' | 'EXPIRED' | 'DYNAMIC';
-		/**
 		 * Cloudflare cache age.
 		 */
 		age?: number;
@@ -72,27 +71,39 @@ export interface DefaultMeta {
 		 * Cloudflare max cache age.
 		 */
 		maxAge?: number;
+		/**
+		 * Cloudflare cache status.
+		 */
+		status: 'BYPASS' | 'DYNAMIC' | 'EXPIRED' | 'HIT' | 'MISS';
 	};
+	/**
+	 * If this request required an API key it returned rate limit information in the headers, which is included here.
+	 */
+	ratelimit?: RateLimitData;
 }
 
 export interface RequestOptions {
 	/**
-	 * signal used to abort the (queued) request
+	 * whether to cache the response
+	 *
+	 * @default true
 	 */
-	signal?: AbortSignal;
+	cache?: boolean;
 	/**
 	 * whether to skip the cache check
+	 *
 	 * @default false
 	 */
 	force?: boolean;
 	/**
-	 * whether to cache the response
-	 * @default true
+	 * signal used to abort the (queued) request
 	 */
-	cache?: boolean;
+	signal?: AbortSignal;
 }
 
-/** @hidden */
+/**
+ * @hidden
+ */
 export interface Parameters {
 	[parameter: string]: string;
 }
@@ -101,13 +112,24 @@ export interface Parameters {
  * If you want built in caching, implementing these methods (or utilitizing an library that includes these methods) is a must. Refer to the [cache](https://node-hypixel.zikeji.com/guide/cache) guide.
  */
 export interface BasicCache {
-	get<T extends Components.Schemas.ApiSuccess>(key: string): Promise<(T & DefaultMeta) | undefined | null>;
-	set<T extends Components.Schemas.ApiSuccess>(key: string, value: T & DefaultMeta): Promise<unknown>;
+	get<T extends Components.Schemas.ApiSuccess>(key: string): Promise<(DefaultMeta & T) | null | undefined>;
+	set<T extends Components.Schemas.ApiSuccess>(key: string, value: DefaultMeta & T): Promise<unknown>;
 }
 
 export interface ClientOptions {
 	/**
+	 * Functions you want to use for caching results. Optional.
+	 */
+	cache?: BasicCache;
+	/**
+	 * Additional waiting time for rate limits
+	 *
+	 * @default 0
+	 */
+	rateLimitResetOffset?: number;
+	/**
 	 * Amount of times to retry a failed request.
+	 *
 	 * @default 3
 	 */
 	retries?: number;
@@ -115,82 +137,102 @@ export interface ClientOptions {
 	 * The time, in milliseconds, you want to wait before giving up on the method call.
 	 *
 	 * **NOTE:** This option is ignored when being [used in Deno](https://github.com/denoland/deno/issues/7019).
+	 *
 	 * @default 10000
 	 */
 	timeout?: number;
 	/**
 	 * User agent the client uses when making calls to Hypixel's API
+	 *
 	 * @default @zikeji/hypixel
 	 */
 	userAgent?: string;
-	/**
-	 * Functions you want to use for caching results. Optional.
-	 */
-	cache?: BasicCache;
-	/**
-	 * Additional waiting time for rate limits
-	 * @default 0
-	 */
-	rateLimitResetOffset?: number;
 }
 
 export interface Client {
 	/**
-	 * Listen to the "limited" event which emits when the client starts limiting your calls due to hitting the rate limit.
-	 * @category Events
-	 */
-	on(event: 'limited', listener: (limit: number, reset: Date) => void): this;
-
-	/**
-	 * Listen to the "reset" event which emits when the API rate limit resets.
-	 * @category Events
-	 */
-	on(event: 'reset', listener: () => void): this;
-
-	/**
-	 * Listen once to the "limited" event which emits when the client starts limiting your calls due to hitting the rate limit.
-	 * @category Events
-	 */
-	once(event: 'limited', listener: (limit: number, reset: Date) => void): this;
-
-	/**
-	 * Listen once to the "reset" event which emits when the API rate limit resets.
-	 * @category Events
-	 */
-	once(event: 'reset', listener: () => void): this;
-
-	/**
 	 * Remove your function listening to the "limited" event.
+	 *
 	 * @category Events
 	 */
 	off(event: 'limited', listener: () => void): this;
 
 	/**
 	 * Remove your function listening to the "reset" event.
+	 *
 	 * @category Events
 	 */
+	// eslint-disable-next-line @typescript-eslint/unified-signatures
 	off(event: 'reset', listener: () => void): this;
+
+	/**
+	 * Listen to the "limited" event which emits when the client starts limiting your calls due to hitting the rate limit.
+	 *
+	 * @category Events
+	 */
+	on(event: 'limited', listener: (limit: number, reset: Date) => void): this;
+
+	/**
+	 * Listen to the "reset" event which emits when the API rate limit resets.
+	 *
+	 * @category Events
+	 */
+	on(event: 'reset', listener: () => void): this;
+
+	/**
+	 * Listen once to the "limited" event which emits when the client starts limiting your calls due to hitting the rate limit.
+	 *
+	 * @category Events
+	 */
+	once(event: 'limited', listener: (limit: number, reset: Date) => void): this;
+
+	/**
+	 * Listen once to the "reset" event which emits when the API rate limit resets.
+	 *
+	 * @category Events
+	 */
+	once(event: 'reset', listener: () => void): this;
 }
 
 export class Client extends EventEmitter {
-	/** @internal */
+	/**
+	 * @internal
+	 */
 	private static readonly endpoint = new URL(`https://api.hypixel.net`);
-	/** @internal */
+
+	/**
+	 * @internal
+	 */
 	private readonly apiKey: string;
-	/** @internal */
+
+	/**
+	 * @internal
+	 */
 	private readonly retries: number;
-	/** @internal */
+
+	/**
+	 * @internal
+	 */
 	private readonly timeout: number;
-	/** @internal */
+
+	/**
+	 * @internal
+	 */
 	private readonly userAgent: string;
-	/** @internal */
+
+	/**
+	 * @internal
+	 */
 	private readonly cache?: ClientOptions['cache'];
-	/** @internal */
+
+	/**
+	 * @internal
+	 */
 	private readonly rateLimitResetOffset: number;
 
-	readonly queue = new AsyncQueue();
+	public readonly queue = new AsyncQueue();
 
-	readonly rateLimit: RateLimitData = {
+	public readonly rateLimit: RateLimitData = {
 		remaining: -1,
 		reset: -1,
 		limit: -1,
@@ -198,6 +240,7 @@ export class Client extends EventEmitter {
 
 	/**
 	 * Create a new instance of the API client.
+	 *
 	 * @param key Your Hypixel API key.
 	 * @param options Any options and customizations being applied.
 	 */
@@ -218,6 +261,7 @@ export class Client extends EventEmitter {
 
 	/**
 	 * Returns list of boosters.
+	 *
 	 * @example
 	 * ```typescript
 	 * const boosters = await client.boosters();
@@ -225,12 +269,13 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public boosters(options?: RequestOptions): Promise<Paths.Boosters.Get.Responses.$200> {
+	public async boosters(options?: RequestOptions): Promise<Paths.Boosters.Get.Responses.$200> {
 		return this.call<Paths.Boosters.Get.Responses.$200>('boosters', options);
 	}
 
 	/**
 	 * Returns the id of the requested guild if found.
+	 *
 	 * @example
 	 * ```typescript
 	 * const { guild } = await client.findGuild.byUuid("20934ef9488c465180a78f861586b4cf");
@@ -243,6 +288,7 @@ export class Client extends EventEmitter {
 
 	/**
 	 * Returns friendships for given player.
+	 *
 	 * @example
 	 * ```typescript
 	 * const friends = await client.friends.uuid("20934ef9488c465180a78f861586b4cf");
@@ -254,6 +300,7 @@ export class Client extends EventEmitter {
 
 	/**
 	 * Returns the current player count along with the player count of each public game + mode on the server.
+	 *
 	 * @example
 	 * ```typescript
 	 * const response = await client.gameCounts();
@@ -261,12 +308,13 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public gameCounts(options?: RequestOptions): Promise<Paths.GameCounts.Get.Responses.$200> {
+	public async gameCounts(options?: RequestOptions): Promise<Paths.GameCounts.Get.Responses.$200> {
 		return this.call<Paths.GameCounts.Get.Responses.$200>('gameCounts', options);
 	}
 
 	/**
 	 * Returns the guild by the requested ID if found.
+	 *
 	 * @example
 	 * ```typescript
 	 * const guild = await client.guild.id("553490650cf26f12ae5bac8f");
@@ -277,6 +325,7 @@ export class Client extends EventEmitter {
 
 	/**
 	 * Returns information regarding given key.
+	 *
 	 * @example
 	 * ```typescript
 	 * const key = await client.key();
@@ -284,12 +333,13 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public key(options?: RequestOptions): Promise<Paths.Key.Get.Responses.$200> {
+	public async key(options?: RequestOptions): Promise<Paths.Key.Get.Responses.$200> {
 		return this.call<Paths.Key.Get.Responses.$200>('key', options);
 	}
 
 	/**
 	 * Returns a list of the official leaderboards and their current standings for games on the network.
+	 *
 	 * @example
 	 * ```typescript
 	 * const leaderboards = await client.leaderboards();
@@ -297,12 +347,13 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public leaderboards(options?: RequestOptions): Promise<Paths.Leaderboards.Get.Responses.$200> {
+	public async leaderboards(options?: RequestOptions): Promise<Paths.Leaderboards.Get.Responses.$200> {
 		return this.call<Paths.Leaderboards.Get.Responses.$200>('leaderboards', options);
 	}
 
 	/**
 	 * Returns a player's data, such as game stats.
+	 *
 	 * @example
 	 * ```typescript
 	 * const player = await client.player.uuid("20934ef9488c465180a78f861586b4cf");
@@ -314,6 +365,7 @@ export class Client extends EventEmitter {
 
 	/**
 	 * Returns current player count.
+	 *
 	 * @example
 	 * ```typescript
 	 * const response = await client.playerCounts();
@@ -321,12 +373,13 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public playerCount(options?: RequestOptions): Promise<Paths.PlayerCount.Get.Responses.$200> {
+	public async playerCount(options?: RequestOptions): Promise<Paths.PlayerCount.Get.Responses.$200> {
 		return this.call<Paths.PlayerCount.Get.Responses.$200>('playerCount', options);
 	}
 
 	/**
 	 * Returns recent games of a player. A maximum of 100 games are returned and recent games are only stored for up to 3 days at this time.
+	 *
 	 * @example
 	 * ```typescript
 	 * const response = await client.recentGames.uuid("20934ef9488c465180a78f861586b4cf");
@@ -338,18 +391,21 @@ export class Client extends EventEmitter {
 
 	/**
 	 * Relatively static Hypixel resources that don't change often at all.
+	 *
 	 * @category API
 	 */
 	public resources = new Resources(this);
 
 	/**
 	 * All SkyBlock related endpoints.
+	 *
 	 * @category API
 	 */
 	public skyblock = new SkyBlock(this);
 
 	/**
 	 * Returns online status information for given player, including game, mode and map when available.
+	 *
 	 * @example
 	 * ```typescript
 	 * const response = await client.status.uuid("20934ef9488c465180a78f861586b4cf");
@@ -361,6 +417,7 @@ export class Client extends EventEmitter {
 
 	/**
 	 * Returns some statistics about Watchdog & bans.
+	 *
 	 * @example
 	 * ```typescript
 	 * const response = await client.watchdogstats();
@@ -375,7 +432,7 @@ export class Client extends EventEmitter {
 	 * ```
 	 * @category API
 	 */
-	public watchdogstats(options?: RequestOptions): Promise<Paths.Watchdogstats.Get.Responses.$200> {
+	public async watchdogstats(options?: RequestOptions): Promise<Paths.Watchdogstats.Get.Responses.$200> {
 		return this.call<Paths.Watchdogstats.Get.Responses.$200>('watchdogstats', options);
 	}
 
@@ -404,9 +461,9 @@ export class Client extends EventEmitter {
 		}
 
 		const key = `${path.replaceAll('/', ':')}${
-			parameters ? `:${Object.values(parameters).map((v) => v.toLowerCase().replaceAll('-', ''))}` : ''
+			parameters ? `:${Object.values(parameters).map((value) => value.toLowerCase().replaceAll('-', ''))}` : ''
 		}`;
-		const cachedResponse: (T & { cached?: boolean }) | undefined | null = await this.cache.get<T>(key);
+		const cachedResponse: (T & { cached?: boolean }) | null | undefined = await this.cache.get<T>(key);
 		if (cachedResponse) {
 			cachedResponse.cached = true;
 			return cachedResponse;
@@ -417,7 +474,9 @@ export class Client extends EventEmitter {
 		return response;
 	}
 
-	/** @internal */
+	/**
+	 * @internal
+	 */
 	private async executeActionableCall<T extends Components.Schemas.ApiSuccess>(call: ActionableCall<T>): Promise<T> {
 		if (call.auth) {
 			await this.queue.wait({ signal: call.signal });
@@ -428,25 +487,31 @@ export class Client extends EventEmitter {
 				this.emit('reset');
 			}
 		}
-		let response: T & DefaultMeta;
+
+		let response: DefaultMeta & T;
 		try {
 			response = await call.execute();
 		} catch (error) {
 			if (error instanceof InvalidKeyError || error instanceof GenericHTTPError || call.retries === this.retries) {
 				throw error;
 			}
+
 			call.retries += 1;
-			return this.executeActionableCall<T>(call);
+			return await this.executeActionableCall<T>(call);
 		} finally {
 			if (call.auth) this.queue.shift();
 		}
+
 		if (typeof response === 'object' && call.auth) {
 			response.ratelimit = { ...this.rateLimit };
 		}
+
 		return response;
 	}
 
-	/** @internal */
+	/**
+	 * @internal
+	 */
 	private createActionableCall<T extends Components.Schemas.ApiSuccess>(
 		path: string,
 		options?: RequestOptions,
@@ -465,13 +530,15 @@ export class Client extends EventEmitter {
 		}
 
 		return {
-			execute: () => this.callMethod(path, auth, parameters, options?.signal),
+			execute: async () => this.callMethod(path, auth, parameters, options?.signal),
 			retries: 0,
 			auth,
 		} as ActionableCall<T>;
 	}
 
-	/** @internal */
+	/**
+	 * @internal
+	 */
 	private async callMethod<
 		T extends Components.Schemas.ApiSuccess & {
 			cause?: string;
@@ -530,15 +597,15 @@ export class Client extends EventEmitter {
 			const status = res.headers.get('cf-cache-status');
 
 			if (status) {
-				const age = parseInt(res.headers.get('age')!, 10);
+				const age = Number.parseInt(res.headers.get('age')!, 10);
 				const maxAge = CACHE_CONTROL_REGEX.exec(res.headers.get('cache-control')!);
 				parsed.cloudflareCache = {
 					status: status as never,
 					...(typeof age === 'number' && !Number.isNaN(age) && { age }),
 					...(status === 'HIT' && (typeof age !== 'number' || Number.isNaN(age)) && { age: 0 }),
 					...(maxAge?.length &&
-						parseInt(maxAge[0], 10) > 0 && {
-							maxAge: parseInt(maxAge[0], 10),
+						Number.parseInt(maxAge[0], 10) > 0 && {
+							maxAge: Number.parseInt(maxAge[0], 10),
 						}),
 				};
 			}
@@ -551,16 +618,18 @@ export class Client extends EventEmitter {
 		}
 	}
 
-	/** @internal */
+	/**
+	 * @internal
+	 */
 	private getRateLimitHeaders(headers: Headers): void {
 		for (const key of Object.keys(this.rateLimit)) {
 			const value = headers.get(`ratelimit-${key}`);
 
 			if (value) {
 				this.rateLimit[key as keyof Client['rateLimit']] =
-					key !== 'reset'
-						? parseInt(value, 10)
-						: parseInt(value, 10) * 1_000 + (Date.parse(headers.get('date')!) || Date.now());
+					key === 'reset'
+						? Number.parseInt(value, 10) * 1_000 + (Date.parse(headers.get('date')!) || Date.now())
+						: Number.parseInt(value, 10);
 			}
 		}
 	}

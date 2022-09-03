@@ -1,11 +1,14 @@
-import type { URL } from 'node:url';
+import { type URL } from 'node:url';
 
 export class GenericHTTPError extends Error {
-	public url: URL;
-	/** The status code of the response */
-	public code: number;
+	public readonly url: URL;
 
-	constructor(url: URL, code: number, message: string) {
+	/**
+	 * The status code of the response
+	 */
+	public readonly code: number;
+
+	public constructor(url: URL, code: number, message: string) {
 		super(message);
 
 		this.url = url;
@@ -14,7 +17,7 @@ export class GenericHTTPError extends Error {
 		Object.setPrototypeOf(this, GenericHTTPError.prototype);
 	}
 
-	override toString() {
+	public override toString() {
 		return `${this.name} ${this.code}: ${this.message}`;
 	}
 }

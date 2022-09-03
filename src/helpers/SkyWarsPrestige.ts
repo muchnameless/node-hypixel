@@ -7,23 +7,23 @@
  * For the original full copyright and license information, please view the LICENSE-HYPIXEL-PHP.md that was distributed with this source code.
  */
 
-import { MinecraftColorAsHex, MinecraftFormatting } from './MinecraftFormatting';
+import { MinecraftColorAsHex, MinecraftFormatting } from './MinecraftFormatting.js';
 
 /**
  * Describes the properties of a Prestige object returned by {@link getSkyWarsPrestigeForLevel}.
  */
 export interface SkyWarsPrestige {
-	id: string;
-	name: string;
 	color: MinecraftFormatting;
 	colorHex: MinecraftColorAsHex;
-	minimumLevel: number;
 	icon: {
-		version: number;
+		data: number;
 		material: string;
 		typeId: number;
-		data: number;
+		version: number;
 	};
+	id: string;
+	minimumLevel: number;
+	name: string;
 	textIcon: string | null;
 }
 
@@ -203,12 +203,14 @@ export const SkyWarsPrestiges: SkyWarsPrestige[] = [
 
 /**
  * Returns a {@link SkyWarsPrestige} object for the level you supplied.
+ *
  * @param level The level of the player you are checking. TODO: obtain
  */
 export function getSkyWarsPrestigeForLevel(level: number): SkyWarsPrestige {
 	if (typeof level !== 'number' || level < 1) {
 		throw new TypeError('Not a valid level.');
 	}
+
 	return SkyWarsPrestiges.reduceRight(
 		(acc, prestige) => (acc.id === 'NONE' && level >= prestige.minimumLevel ? prestige : acc),
 		SkyWarsPrestiges[0],

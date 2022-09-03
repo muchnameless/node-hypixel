@@ -1,39 +1,34 @@
-import type { Components } from '../types/api';
+import { type Components } from '../types/api.js';
 
 export interface SkyBlockSkillsInfo {
-	FARMING: SkyBlockSkillInfo;
-	MINING: SkyBlockSkillInfo;
-	COMBAT: SkyBlockSkillInfo;
-	/**
-	 * As official API support does not exist for this skill, this will always return level 0.
-	 */
-	DUNGEONEERING: SkyBlockSkillInfo;
-	FORAGING: SkyBlockSkillInfo;
-	FISHING: SkyBlockSkillInfo;
-	ENCHANTING: SkyBlockSkillInfo;
+	[key: string]: SkyBlockSkillInfo;
 	ALCHEMY: SkyBlockSkillInfo;
 	CARPENTRY: SkyBlockSkillInfo;
+	COMBAT: SkyBlockSkillInfo;
+	DUNGEONEERING: SkyBlockSkillInfo;
+	ENCHANTING: SkyBlockSkillInfo;
+	FARMING: SkyBlockSkillInfo;
+	FISHING: SkyBlockSkillInfo;
+	FORAGING: SkyBlockSkillInfo;
+	MINING: SkyBlockSkillInfo;
 	RUNECRAFTING: SkyBlockSkillInfo;
-	/**
-	 * As official API support does not exist for this skill, this will always return level 0.
-	 */
 	SOCIAL: SkyBlockSkillInfo;
 	TAMING: SkyBlockSkillInfo;
-	[key: string]: SkyBlockSkillInfo;
 }
 
 export interface SkyBlockSkillInfo {
-	name: string;
 	description: string;
-	level: number;
 	exp: number;
-	totalExpToLevel: number;
 	expToNextLevel: number;
+	level: number;
 	maxLevel: number;
+	name: string;
+	totalExpToLevel: number;
 }
 
 /**
  * This helper takes a profile member and converts raw skill EXP to skill levels using the skills resources. Returns false is none of the profile member does not have their skills API enabled.
+ *
  * @param profileMember The SkyBlock profile member object you want to check.
  * @param skills The skills resource object.
  * @category Helper
@@ -44,27 +39,29 @@ export function getSkyBlockProfileMemberSkills(
 ): SkyBlockSkillsInfo | false {
 	let hasApi = false;
 	const result = {} as SkyBlockSkillsInfo;
-	for (let i = 0; i < Object.keys(skills).length; i += 1) {
-		const skillName = Object.keys(skills)[i];
-		const skill = skills[skillName];
+
+	for (const [skillName, skill] of Object.entries(skills)) {
 		const skillKey = `experience_skill_${skillName.toLowerCase()}` as keyof Components.Schemas.SkyBlockProfileMember;
 		let exp = 0;
 		if (skillKey in profileMember) {
 			exp = profileMember[skillKey] as number;
 			hasApi = true;
 		}
+
 		let level = 0;
 		let totalExpToLevel = 0;
 		let expToNextLevel = 0;
-		for (let ii = 0; ii < skill.levels.length; ii += 1) {
-			const levelInfo = skill.levels[ii];
+
+		for (const levelInfo of skill.levels) {
 			if (levelInfo.totalExpRequired > exp) {
 				expToNextLevel = levelInfo.totalExpRequired - exp;
 				break;
 			}
+
 			level = levelInfo.level;
 			totalExpToLevel = levelInfo.totalExpRequired;
 		}
+
 		result[skillName] = {
 			name: skill.name,
 			description: skill.description,
@@ -75,8 +72,10 @@ export function getSkyBlockProfileMemberSkills(
 			maxLevel: skill.maxLevel,
 		};
 	}
+
 	if (hasApi === false) {
 		return false;
 	}
+
 	return result;
 }

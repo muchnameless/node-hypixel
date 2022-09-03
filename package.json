@@ -114,6 +114,7 @@
   },
   "dependencies": {
     "@sapphire/async-queue": "^1.5.0",
+    "@sapphire/ratelimits": "^2.4.4",
     "undici": "^5.10.0"
   }
 }

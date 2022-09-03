@@ -3,6 +3,7 @@ import { clearTimeout, setTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { URL } from 'node:url';
 import { AsyncQueue } from '@sapphire/async-queue';
+import { RateLimitManager } from '@sapphire/ratelimits';
 import { fetch, type Headers } from 'undici';
 import { GenericHTTPError } from './errors/GenericHTTPError.js';
 import { InvalidKeyError } from './errors/InvalidKeyError.js';
@@ -232,11 +233,8 @@ export class Client extends EventEmitter {
 
 	public readonly queue = new AsyncQueue();
 
-	public readonly rateLimit: RateLimitData = {
-		remaining: -1,
-		reset: -1,
-		limit: -1,
-	};
+	public readonly rateLimitManager = new RateLimitManager(60_000, 120);
+
 
 	/**
 	 * Create a new instance of the API client.
@@ -479,12 +477,29 @@ export class Client extends EventEmitter {
 	 */
 	private async executeActionableCall<T extends Components.Schemas.ApiSuccess>(call: ActionableCall<T>): Promise<T> {
 		if (call.auth) {
-			await this.queue.wait({ signal: call.signal });
-			if (this.rateLimit.remaining === 0) {
-				const timeout = this.rateLimit.reset - Date.now() + this.rateLimitResetOffset;
-				this.emit('limited', this.rateLimit.limit, new Date(this.rateLimit.reset + this.rateLimitResetOffset));
-				await sleep(timeout);
-				this.emit('reset');
+			const rateLimit = this.rateLimitManager.acquire('global');
+
+			if (rateLimit.limited) {
+				await this.queue.wait({ signal: call.signal });
+	
+				if (rateLimit.limited) {
+					const timeout = rateLimit.remainingTime + this.rateLimitResetOffset
+
+					this.emit('limited', this.rateLimitManager.limit, new Date(timeout + Date.now()));
+					try {
+						await sleep(timeout, null, { signal: call.signal });
+					} catch (error) {
+						this.queue.shift();
+						throw error;
+					} finally {
+						this.emit('reset');
+					}
+				}
+	
+				rateLimit.consume();
+				this.queue.shift();
+			} else {
+				rateLimit.consume();
 			}
 		}
 
@@ -497,14 +512,7 @@ export class Client extends EventEmitter {
 			}
 
 			call.retries += 1;
-			// eslint-disable-next-line @typescript-eslint/return-await
 			return this.executeActionableCall<T>(call);
-		} finally {
-			if (call.auth) this.queue.shift();
-		}
-
-		if (typeof response === 'object' && call.auth) {
-			response.ratelimit = { ...this.rateLimit };
 		}
 
 		return response;
@@ -623,15 +631,22 @@ export class Client extends EventEmitter {
 	 * @internal
 	 */
 	private getRateLimitHeaders(headers: Headers): void {
-		for (const key of Object.keys(this.rateLimit)) {
-			const value = headers.get(`ratelimit-${key}`);
+		const rateLimit = this.rateLimitManager.acquire('global');
 
-			if (value) {
-				this.rateLimit[key as keyof Client['rateLimit']] =
-					key === 'reset'
-						? Number.parseInt(value, 10) * 1_000 + (Date.parse(headers.get('date')!) || Date.now())
-						: Number.parseInt(value, 10);
-			}
+		const remaining = Number.parseInt(headers.get('ratelimit-remaining')!, 10);
+		if (remaining && remaining < rateLimit.remaining) {
+			rateLimit.remaining = remaining;
+		}
+
+		const reset = Number.parseInt(headers.get('ratelimit-reset')!, 10) * 1_000 + (Date.parse(headers.get('date')!))
+		if (reset && reset > rateLimit.expires) {
+			rateLimit.expires = reset;
+		}
+
+		const limit = Number.parseInt(headers.get('ratelimit-limit')!, 10);
+		if (limit) {
+			// @ts-expect-error readonly
+			this.rateLimitManager.limit = limit;
 		}
 	}
 }

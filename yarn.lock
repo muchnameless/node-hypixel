@@ -2591,6 +2591,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sapphire/ratelimits@npm:^2.4.4":
+  version: 2.4.4
+  resolution: "@sapphire/ratelimits@npm:2.4.4"
+  dependencies:
+    "@sapphire/time-utilities": ^1.7.4
+  checksum: 8bb31173f2fd61ca64b4f34ff3a927de00e339ee8d4dad7b8d80fa10e9020889033fc1f3ec0560256f54b8aedf3d2973378fe24d87f6aa1ca98be936eea35fcb
+  languageName: node
+  linkType: hard
+
+"@sapphire/time-utilities@npm:^1.7.4":
+  version: 1.7.6
+  resolution: "@sapphire/time-utilities@npm:1.7.6"
+  dependencies:
+    "@sapphire/utilities": ^3.9.2
+  checksum: eadcdf2cbadcc15fa36d7d3b4719acb05f30ed0611f3f8bcfd47d8037221239168f190e79b2c05942cc66a66cbbf3c7d313eda15e9a2a3cff81cf25cec42f3ce
+  languageName: node
+  linkType: hard
+
+"@sapphire/utilities@npm:^3.9.2":
+  version: 3.9.3
+  resolution: "@sapphire/utilities@npm:3.9.3"
+  checksum: 9f3f977fd5c0677d5f79136e9cb68ade3317cfba3e87bb58689f4af68233a807af34eb6092ad262c946d5eaf5c4a76cd534b0b395ebbaf0f0912dd80e174f912
+  languageName: node
+  linkType: hard
+
 "@semantic-release/changelog@npm:^6.0.1":
   version: 6.0.1
   resolution: "@semantic-release/changelog@npm:6.0.1"
@@ -4387,6 +4412,7 @@ __metadata:
     "@mr-hope/vuepress-plugin-last-update": ^1.11.0
     "@mr-hope/vuepress-types": ^1.30.0
     "@sapphire/async-queue": ^1.5.0
+    "@sapphire/ratelimits": ^2.4.4
     "@semantic-release/changelog": ^6.0.1
     "@semantic-release/exec": ^6.0.3
     "@semantic-release/git": ^10.0.1

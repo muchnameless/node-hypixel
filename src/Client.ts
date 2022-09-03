@@ -497,7 +497,8 @@ export class Client extends EventEmitter {
 			}
 
 			call.retries += 1;
-			return await this.executeActionableCall<T>(call);
+			// eslint-disable-next-line @typescript-eslint/return-await
+			return this.executeActionableCall<T>(call);
 		} finally {
 			if (call.auth) this.queue.shift();
 		}

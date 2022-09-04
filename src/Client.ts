@@ -634,12 +634,16 @@ export class Client extends EventEmitter {
 		const rateLimit = this.rateLimitManager.acquire('global');
 
 		const remaining = Number.parseInt(headers.get('ratelimit-remaining')!, 10);
-		if (remaining && remaining < rateLimit.remaining) {
+		if (remaining < rateLimit.remaining) {
 			rateLimit.remaining = remaining;
 		}
 
-		const reset = Number.parseInt(headers.get('ratelimit-reset')!, 10) * 1_000 + (Date.parse(headers.get('date')!))
-		if (reset && reset > rateLimit.expires) {
+		// get server time
+		const serverTime = Date.parse(headers.get('date')!);
+		const now = Date.now();
+
+		const reset = Number.parseInt(headers.get('ratelimit-reset')!, 10) * 1_000 + (serverTime || now);
+		if (reset > now) {
 			rateLimit.expires = reset;
 		}
 

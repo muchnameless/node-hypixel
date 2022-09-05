@@ -235,7 +235,6 @@ export class Client extends EventEmitter {
 
 	public readonly rateLimitManager = new RateLimitManager(60_000, 120);
 
-
 	/**
 	 * Create a new instance of the API client.
 	 *
@@ -255,6 +254,13 @@ export class Client extends EventEmitter {
 		this.userAgent = options?.userAgent ?? '@zikeji/hypixel';
 		this.cache = options?.cache;
 		this.rateLimitResetOffset = options?.rateLimitResetOffset ?? 0;
+	}
+
+	/**
+	 * rateLimit bucket
+	 */
+	public get rateLimit() {
+		return this.rateLimitManager.acquire('global');
 	}
 
 	/**
@@ -477,13 +483,13 @@ export class Client extends EventEmitter {
 	 */
 	private async executeActionableCall<T extends Components.Schemas.ApiSuccess>(call: ActionableCall<T>): Promise<T> {
 		if (call.auth) {
-			const rateLimit = this.rateLimitManager.acquire('global');
+			const { rateLimit } = this;
 
 			if (rateLimit.limited) {
 				await this.queue.wait({ signal: call.signal });
-	
+
 				if (rateLimit.limited) {
-					const timeout = rateLimit.remainingTime + this.rateLimitResetOffset
+					const timeout = rateLimit.remainingTime + this.rateLimitResetOffset;
 
 					this.emit('limited', this.rateLimitManager.limit, new Date(timeout + Date.now()));
 					try {
@@ -495,7 +501,7 @@ export class Client extends EventEmitter {
 						this.emit('reset');
 					}
 				}
-	
+
 				rateLimit.consume();
 				this.queue.shift();
 			} else {
@@ -631,7 +637,7 @@ export class Client extends EventEmitter {
 	 * @internal
 	 */
 	private getRateLimitHeaders(headers: Headers): void {
-		const rateLimit = this.rateLimitManager.acquire('global');
+		const { rateLimit } = this;
 
 		const remaining = Number.parseInt(headers.get('ratelimit-remaining')!, 10);
 		if (remaining < rateLimit.remaining) {

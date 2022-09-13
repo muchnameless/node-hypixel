@@ -4019,6 +4019,10 @@ export declare namespace Components {
 				item_id: string;
 				costs: (EssenceUpgrade | ItemUpgrade)[];
 			};
+			gemstone_slots?: {
+				costs?: ({ amount: number; item_id: string; type: 'ITEM' } | { coins: number; type: 'COINS' })[];
+				slot_type: string;
+			}[];
 		}
 		export interface SkyBlockItemsResourcesResponse {
 			/**

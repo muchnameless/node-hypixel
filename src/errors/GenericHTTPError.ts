@@ -1,7 +1,7 @@
 import { type URL } from 'node:url';
 
 export class GenericHTTPError extends Error {
-	public readonly url: URL;
+	public readonly url: string;
 
 	/**
 	 * The status code of the response
@@ -11,7 +11,7 @@ export class GenericHTTPError extends Error {
 	public constructor(url: URL, code: number, message: string) {
 		super(message);
 
-		this.url = url;
+		this.url = url.toString();
 		this.code = code;
 
 		Object.setPrototypeOf(this, GenericHTTPError.prototype);

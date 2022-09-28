@@ -2713,7 +2713,7 @@ export declare namespace Components {
 			banking?: /* Profile banking information. Only shows up if their banking API is enabled. */ SkyBlockProfileBanking;
 			community_upgrades?: SkyBlockProfileCommunityUpgrades;
 			/**
-			 * Often this field is "ironman".
+			 * Possible values: "ironman", "bingo".
 			 */
 			game_mode?: string;
 			/**
@@ -2729,6 +2729,10 @@ export declare namespace Components {
 			 * Strawberry
 			 */
 			cute_name: string;
+			/**
+			 * Whether the profile is currently selected by the player.
+			 */
+			selected: boolean;
 		} | null;
 		/**
 		 * Array of values, each value describing a dungeon NPC the profile member has spoken to.
@@ -2923,7 +2927,6 @@ export declare namespace Components {
 			fishing_treasure_caught?: number;
 			inv_armor: SkyBlockProfileInventoryData;
 			last_death: number;
-			last_save: number;
 			objectives: SkyBlockProfileObjectives;
 			pets?: SkyBlockProfilePets;
 			quests: SkyBlockProfileQuests;
@@ -3041,7 +3044,6 @@ export declare namespace Components {
 			fishing_treasure_caught?: number;
 			inv_armor: SkyBlockProfileInventoryData;
 			last_death: number;
-			last_save: number;
 			objectives: SkyBlockProfileObjectives;
 			pets?: SkyBlockProfilePets;
 			quests: SkyBlockProfileQuests;

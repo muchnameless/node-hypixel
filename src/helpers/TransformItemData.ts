@@ -60,6 +60,7 @@ export interface NBTExtraAttributes {
 		| { [name: string]: number }
 		| undefined;
 	anvil_uses?: number;
+	attributes?: Record<string, number>;
 	backpack_color?: string;
 	color?: string;
 	dungeon_item_level?: number;

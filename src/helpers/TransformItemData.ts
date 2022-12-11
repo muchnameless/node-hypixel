@@ -95,6 +95,7 @@ export interface NBTExtraAttributes {
 	 */
 	new_year_cake_bag_data?: NBTInventory;
 	originTag?: string;
+	petInfo?: string;
 	potion?: string;
 	potion_level?: number;
 	potion_name?: string;

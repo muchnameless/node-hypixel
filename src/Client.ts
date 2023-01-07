@@ -513,7 +513,11 @@ export class Client extends EventEmitter {
 		try {
 			response = await call.execute();
 		} catch (error) {
-			if (error instanceof InvalidKeyError || error instanceof GenericHTTPError || call.retries === this.retries) {
+			if (
+				error instanceof InvalidKeyError ||
+				(error instanceof GenericHTTPError && !(error.code >= 500 && error.code < 600)) ||
+				call.retries === this.retries
+			) {
 				throw error;
 			}
 

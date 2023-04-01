@@ -55,15 +55,23 @@ export interface NBTExtraAttributes {
 		| NBTExtraAttributesPotionEffect[]
 		| NBTInventory
 		| number[]
+		| string[]
 		| number
 		| string
-		| { [name: string]: number }
+		| { [name: string]: unknown }
 		| undefined;
+	ability_scroll?: string[];
 	anvil_uses?: number;
+	artOfPeaceApplied?: number;
+	art_of_war_count?: number;
 	attributes?: Record<string, number>;
 	backpack_color?: string;
 	color?: string;
+	drill_part_engine?: string;
+	drill_part_fuel_tank?: string;
+	drill_part_upgrade_module?: string;
 	dungeon_item_level?: number;
+	dye_item?: string;
 	effects?: NBTExtraAttributesPotionEffect[];
 	/**
 	 * Each key is an enchantment type and the level. e.g. "telekinesis" or "impaling"
@@ -71,12 +79,17 @@ export interface NBTExtraAttributes {
 	enchantments?: {
 		[name: string]: number;
 	};
+	ethermerge?: number;
+	farming_for_dummies_count?: number;
+	gems?: Record<string, string | { quality: string; uuid: string }> & { unlocked_slots?: string[] };
+	gemstone_slots?: number;
 	/**
 	 * The contents of the backpack.
 	 */
 	greater_backpack_data?: NBTInventory;
 	hot_potato_count?: number;
 	id: string;
+	jalapeno_count?: number;
 	/**
 	 * The contents of the backpack.
 	 */
@@ -85,30 +98,42 @@ export interface NBTExtraAttributes {
 	 * The contents of the backpack.
 	 */
 	large_backpack_data?: NBTInventory;
+	mana_disintegrator_count?: number;
 	/**
 	 * The contents of the backpack.
 	 */
 	medium_backpack_data?: NBTInventory;
+	model?: string;
 	modifier?: string;
 	/**
 	 * The contents of the cake bag.
 	 */
 	new_year_cake_bag_data?: NBTInventory;
+	new_years_cake?: number;
 	originTag?: string;
 	petInfo?: string;
 	potion?: string;
 	potion_level?: number;
 	potion_name?: string;
 	potion_type?: string;
+	price?: number[];
 	rarity_upgrades?: number;
 	runes?: { [name: string]: number };
+	skin?: string;
 	/**
 	 * The contents of the backpack.
 	 */
 	small_backpack_data?: NBTInventory;
 	splash?: number;
+	stats_book?: number;
+	talisman_enrichment?: string;
+	thunder_charge?: number;
 	timestamp?: string;
+	tuned_transmission?: number;
+	upgrade_level?: number;
 	uuid?: string;
+	winning_bid?: number;
+	wood_singularity_count?: number;
 }
 
 /**

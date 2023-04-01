@@ -28,9 +28,9 @@ enum NETWORK_LEVEL_CONSTANTS {
 	START = 10_000,
 	GROWTH = 2_500,
 	// eslint-disable-next-line @typescript-eslint/prefer-literal-enum-member
-	RPQP = (() => -(START - 0.5 * GROWTH) / GROWTH)(),
+	RPQP = -(START - 0.5 * GROWTH) / GROWTH,
 	// eslint-disable-next-line @typescript-eslint/prefer-literal-enum-member
-	IPQP = (() => RPQP * RPQP)(),
+	IPQP = RPQP * RPQP,
 }
 
 /**

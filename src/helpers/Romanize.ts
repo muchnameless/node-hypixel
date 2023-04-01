@@ -27,6 +27,8 @@ export function romanize(value: number): string {
 	let roman = '';
 
 	for (const [numeral, amount] of Object.entries(ROMAN_NUMERALS)) {
+		if (typeof amount !== 'number') continue;
+
 		while (value >= amount) {
 			roman += numeral;
 			// eslint-disable-next-line no-param-reassign

@@ -580,7 +580,6 @@ export class Client extends EventEmitter {
 		const timeout = setTimeout(listener, this.timeout);
 
 		// external AbortSignal
-		// @ts-expect-error AbortSignal
 		signal?.addEventListener('abort', listener);
 
 		try {
@@ -632,7 +631,6 @@ export class Client extends EventEmitter {
 			return parsed;
 		} finally {
 			clearTimeout(timeout);
-			// @ts-expect-error AbortSignal
 			signal?.removeEventListener('abort', listener);
 		}
 	}

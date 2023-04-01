@@ -2277,7 +2277,7 @@ export declare namespace Components {
 				pricePerUnit: number;
 				orders: number;
 			}[];
-			quick_status: {
+			quick_status?: {
 				productId: string;
 				sellPrice: number;
 				sellVolume: number;

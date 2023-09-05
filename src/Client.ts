@@ -571,7 +571,6 @@ export class Client extends EventEmitter {
 			}
 		}
 
-		// @ts-expect-error AbortSignal
 		signal?.throwIfAborted();
 
 		// internal AbortSignal (to have a timeout without having to abort the external signal)

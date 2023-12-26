@@ -236,7 +236,7 @@ export declare namespace Components {
 		 *
 		 */
 		export interface GuildExpByGameType {
-			[name: string]: undefined | number;
+			[name: string]: number | undefined;
 			ARCADE?: number;
 			ARENA?: number;
 			BATTLEGROUND?: number;
@@ -886,7 +886,7 @@ export declare namespace Components {
 		 * Tiered / numbered achievements the player has earned. All known properties are listed but given it's Hypixel it's subject to change fairly often.
 		 */
 		export interface PlayerAchievements {
-			[name: string]: undefined | number;
+			[name: string]: number | undefined;
 			arcade_arcade_banker?: number;
 			arcade_bounty_hunter?: number;
 			arena_climb_the_ranks?: number;
@@ -1010,7 +1010,7 @@ export declare namespace Components {
 			npc?: PlayerCompassStatsChild;
 		}
 		export interface PlayerCompassStatsChild {
-			[name: string]: undefined | number;
+			[name: string]: number | undefined;
 			arcade?: number;
 			arena?: number;
 			battleground?: number;
@@ -1069,7 +1069,7 @@ export declare namespace Components {
 			twinkle: boolean;
 		}[];
 		export interface PlayerFriendsData {
-			[name: string]: undefined | string[];
+			[name: string]: string[] | undefined;
 			friendBlocksUuid?: string[];
 			friendRequests?: string[];
 			friendRequestsUuid?: string[];
@@ -1092,7 +1092,7 @@ export declare namespace Components {
 		 * Potentially has properties that follow format "given_cookies_NUMBER" which will be an array of strings.
 		 */
 		export interface PlayerHousingMeta {
-			[name: string]: undefined | string | number | boolean | string[] | PlayerHousingMetaPlayerSettings;
+			[name: string]: PlayerHousingMetaPlayerSettings | string[] | boolean | number | string | undefined;
 			allowedBlocks?: string[];
 			firstHouseJoinMs?: number;
 			packages?: string[];
@@ -1107,7 +1107,7 @@ export declare namespace Components {
 			visibilityDisabled?: boolean;
 		}
 		export interface PlayerHousingMetaPlayerSettings {
-			[name: string]: undefined | string | number;
+			[name: string]: number | string | undefined;
 			VISIBILITY?: string;
 			BORDER?: string;
 			TIPS?: string;
@@ -1308,7 +1308,7 @@ export declare namespace Components {
 		 */
 		export interface PlayerMonthlyCrates {
 			[name: string]: {
-				[name: string]: undefined | boolean;
+				[name: string]: boolean | undefined;
 				REGULAR?: boolean;
 				VIP?: boolean;
 				VIP_PLUS?: boolean;
@@ -1400,13 +1400,13 @@ export declare namespace Components {
 		}
 		export interface PlayerSettings {
 			[name: string]:
-				| undefined
 				| boolean
-				| string
 				| number
+				| string
 				| {
 						[name: string]: string;
-				  };
+				  }
+				| undefined;
 			compass?: {
 				[name: string]: string;
 			};
@@ -1482,12 +1482,12 @@ export declare namespace Components {
 			value: string;
 		}
 		export type PlayerSocialMedia = PlayerSocialMediaLinks & {
-			[name: string]: string | boolean | PlayerSocialMediaLinks;
+			[name: string]: PlayerSocialMediaLinks | boolean | string;
 			links: PlayerSocialMediaLinks;
 			prompt: boolean;
 		};
 		export interface PlayerSocialMediaLinks {
-			[name: string]: undefined | string;
+			[name: string]: string | undefined;
 			DISCORD?: string;
 			HYPIXEL?: string;
 			INSTAGRAM?: string;
@@ -1545,7 +1545,7 @@ export declare namespace Components {
 		/**
 		 * Stats for bedwars.
 		 */
-		export type PlayerStatsBedwars = PlayerStatsGameMode & PlayerStatsBedwarsInfo & PlayerStatsBedwarsStats;
+		export type PlayerStatsBedwars = PlayerStatsBedwarsInfo & PlayerStatsBedwarsStats & PlayerStatsGameMode;
 		/**
 		 * These properties generally have to do with either settings, info (like coins, exp, items), and some universal stats.
 		 *
@@ -1556,7 +1556,7 @@ export declare namespace Components {
 		 *
 		 */
 		export interface PlayerStatsBedwarsInfo {
-			[name: string]: undefined | number | boolean | string | string[] | PlayerStatsBedwarsPrivateGamesSettings;
+			[name: string]: PlayerStatsBedwarsPrivateGamesSettings | string[] | boolean | number | string | undefined;
 			chest_history?: string;
 			chest_history_new?: string[];
 			coins?: number;
@@ -1718,7 +1718,7 @@ export declare namespace Components {
 			vanityTokens?: number;
 		}
 		export interface PlayerStatsGameMode {
-			[name: string]: undefined | number | boolean | string | string[];
+			[name: string]: string[] | boolean | number | string | undefined;
 			packages?: string[];
 		}
 		/**
@@ -1726,14 +1726,14 @@ export declare namespace Components {
 		 *
 		 */
 		export interface PlayerStatsHousing {
-			[name: string]: undefined | PlayerStatsHousingLayoutItems;
+			[name: string]: PlayerStatsHousingLayoutItems | undefined;
 			layout_items?: PlayerStatsHousingLayoutItems;
 		}
 		export interface PlayerStatsHousingLayoutItems {
 			[name: string]: string;
 		}
 		export interface PlayerStatsPit {
-			[name: string]: undefined | number | boolean | string | string[] | PlayerStatsGameMode | PlayerStatsPitProfile;
+			[name: string]: PlayerStatsGameMode | PlayerStatsPitProfile | string[] | boolean | number | string | undefined;
 			packages?: string[];
 			pit_stats_ptl?: PlayerStatsGameMode;
 			profile: PlayerStatsPitProfile;
@@ -1836,7 +1836,7 @@ export declare namespace Components {
 		 * Property key is the type of requirement.
 		 */
 		export interface PlayerStatsPitProfileContractRequirements {
-			[name: string]: undefined | number;
+			[name: string]: number | undefined;
 		}
 		export interface PlayerStatsPitProfileEndedContract {
 			[name: string]:
@@ -1924,14 +1924,14 @@ export declare namespace Components {
 		 */
 		export interface PlayerTourney {
 			[name: string]:
-				| undefined
+				| PlayerTourneyGameData
+				| boolean
 				| number
 				| string
-				| boolean
 				| {
 						[name: string]: number;
 				  }
-				| PlayerTourneyGameData;
+				| undefined;
 			first_join_lobby?: number;
 			hide_purchased?: boolean;
 			playtime?: {
@@ -1959,7 +1959,7 @@ export declare namespace Components {
 			packages: string[];
 		}
 		export interface PlayerVoting {
-			[name: string]: undefined | number;
+			[name: string]: number | undefined;
 			last_mcf?: number;
 			last_mcipl?: number;
 			last_mcmp?: number;
@@ -2580,7 +2580,7 @@ export declare namespace Components {
 		 * Each property key is the collection's item, and the value is the XP.
 		 */
 		export interface SkyBlockProfileCollection {
-			[name: string]: undefined | number;
+			[name: string]: number | undefined;
 			BLAZE_ROD?: number;
 			BONE?: number;
 			CACTUS?: number;
@@ -2743,7 +2743,7 @@ export declare namespace Components {
 		}
 		export interface SkyBlockProfileDungeonJournal {
 			journal_entries?: {
-				[name: string]: undefined | SkyBlockProfileDungeonJournalEntries;
+				[name: string]: SkyBlockProfileDungeonJournalEntries | undefined;
 				expedition_volume_1?: SkyBlockProfileDungeonJournalEntries;
 				expedition_volume_2?: SkyBlockProfileDungeonJournalEntries;
 				karylles_diary?: SkyBlockProfileDungeonJournalEntries;
@@ -2891,14 +2891,14 @@ export declare namespace Components {
 			currencies?: {
 				coin_purse?: number;
 				essence?: {
-					CRIMSON?: {current?: number;};
-					DIAMOND?: {current?: number;}
-					DRAGON?: {current?: number;};
-					GOLD?: {current?: number;};
-					ICE?: {current?: number;};
-					SPIDER?: {current?: number;};
-					UNDEAD?: {current?: number;};
-					WITHER?: {current?: number;};
+					CRIMSON?: { current?: number };
+					DIAMOND?: { current?: number };
+					DRAGON?: { current?: number };
+					GOLD?: { current?: number };
+					ICE?: { current?: number };
+					SPIDER?: { current?: number };
+					UNDEAD?: { current?: number };
+					WITHER?: { current?: number };
 				};
 				motes_purse?: unknown;
 			};
@@ -2952,16 +2952,16 @@ export declare namespace Components {
 				contests?: {
 					[
 						contest: `${bigint}:${bigint}_${bigint}:${
-							| 'INK_SACK:3'
-							| 'POTATO_ITEM'
-							| 'CARROT_ITEM'
 							| 'CACTUS'
-							| 'SUGAR_CANE'
+							| 'CARROT_ITEM'
+							| 'INK_SACK:3'
+							| 'MELON'
 							| 'MUSHROOM_COLLECTION'
-							| 'PUMPKIN'
 							| 'NETHER_STALK'
-							| 'WHEAT'
-							| 'MELON'}`
+							| 'POTATO_ITEM'
+							| 'PUMPKIN'
+							| 'SUGAR_CANE'
+							| 'WHEAT'}`
 					]: {
 						collected: number;
 						claimed_rewards?: boolean;
@@ -2980,16 +2980,16 @@ export declare namespace Components {
 				};
 				talked?: boolean;
 				unique_golds?: (
-					| 'INK_SACK:3'
-					| 'POTATO_ITEM'
-					| 'CARROT_ITEM'
 					| 'CACTUS'
-					| 'SUGAR_CANE'
-					| 'MUSHROOM_COLLECTION'
-					| 'PUMPKIN'
-					| 'NETHER_STALK'
-					| 'WHEAT'
+					| 'CARROT_ITEM'
+					| 'INK_SACK:3'
 					| 'MELON'
+					| 'MUSHROOM_COLLECTION'
+					| 'NETHER_STALK'
+					| 'POTATO_ITEM'
+					| 'PUMPKIN'
+					| 'SUGAR_CANE'
+					| 'WHEAT'
 				)[];
 			};
 			misc?: {
@@ -3007,7 +3007,13 @@ export declare namespace Components {
 				 * An array of values, each value describing an island that has been spawned by the member. e.g. "Pond Island"
 				 */
 				achievement_spawned_island_types?: string[];
-				active_effects?: { effect: string; level: number; modifiers: unknown[]; ticks_remaining: number; infinite: boolean; }[];
+				active_effects?: {
+					effect: string;
+					level: number;
+					modifiers: unknown[];
+					ticks_remaining: number;
+					infinite: boolean;
+				}[];
 				autopet?: unknown;
 				/**
 				 * An array of values, each value describing a minion and it's tier that the player has upgraded / crafted.
@@ -3024,7 +3030,7 @@ export declare namespace Components {
 					SKILL_FISHING?: number;
 					SKILL_FORAGING?: number;
 					SKILL_MINING?: number;
-					SKILL_RUNECRAFtING?: number;
+					SKILL_RUNECRAFTING?: number;
 					SKILL_SOCIAL?: number;
 					SKILL_TAMING?: number;
 				};
@@ -3058,7 +3064,7 @@ export declare namespace Components {
 			rift?: {
 				inventory?: {
 					equipment_contents?: SkyBlockProfileInventoryData;
-				}
+				};
 			};
 			shared_inventory?: {
 				candy_inventory_contents?: SkyBlockProfileInventoryData;
@@ -3115,41 +3121,41 @@ export declare namespace Components {
 			visited_zones: string[];
 		}
 		export interface SkyBlockProfileObjective {
-			[name: string]: undefined | boolean | number | string;
+			[name: string]: boolean | number | string | undefined;
 			completed_at: number;
 			progress: number;
 			status: string;
 		}
 		export interface SkyBlockProfileObjectives {
-			[name: string]: undefined | SkyBlockProfileObjective | string[];
+			[name: string]: SkyBlockProfileObjective | string[] | undefined;
 			tutorial?: string[];
 			chop_tree?: SkyBlockProfileObjective;
 			collect_birch_logs?: SkyBlockProfileObjective;
 			collect_clay?: SkyBlockProfileObjective;
 			collect_dark_oak_logs?: SkyBlockProfileObjective;
 			collect_diamond?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
 				DIAMOND?: boolean;
 			};
 			collect_emerald?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
 				EMERALD?: boolean;
 			};
 			collect_end_stone?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
 				ENDER_STONE?: boolean;
 			};
 			collect_farm_animal_resources?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
@@ -3158,7 +3164,7 @@ export declare namespace Components {
 				RAW_CHICKEN?: boolean;
 			};
 			collect_farm_animal_resources_2?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
@@ -3166,7 +3172,7 @@ export declare namespace Components {
 				RABBIT?: boolean;
 			};
 			collect_farming_resources?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
@@ -3176,7 +3182,7 @@ export declare namespace Components {
 				PUMPKIN?: boolean;
 			};
 			collect_farming_resources_2?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
@@ -3185,7 +3191,7 @@ export declare namespace Components {
 				SUGAR_CANE?: boolean;
 			};
 			collect_ingots?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
@@ -3193,7 +3199,7 @@ export declare namespace Components {
 				IRON_INGOT?: boolean;
 			};
 			collect_lapis?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
@@ -3201,7 +3207,7 @@ export declare namespace Components {
 			};
 			collect_log?: SkyBlockProfileObjective;
 			collect_nether_resources?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
@@ -3209,7 +3215,7 @@ export declare namespace Components {
 				NETHER_STALK?: boolean;
 			};
 			collect_nether_resources_2?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
@@ -3218,21 +3224,21 @@ export declare namespace Components {
 				QUARTZ?: boolean;
 			};
 			collect_obsidian?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
 				OBSIDIAN?: boolean;
 			};
 			collect_redstone?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
 				REDSTONE?: boolean;
 			};
 			collect_spider?: {
-				[name: string]: undefined | boolean | number | string;
+				[name: string]: boolean | number | string | undefined;
 				completed_at: number;
 				progress: number;
 				status: string;
@@ -3472,7 +3478,7 @@ export declare namespace Components {
 			status: string;
 		}
 		export interface SkyBlockProfileQuests {
-			[name: string]: undefined | SkyBlockProfileQuest;
+			[name: string]: SkyBlockProfileQuest | undefined;
 			collect_log?: SkyBlockProfileQuest;
 			explore_hub?: SkyBlockProfileQuest;
 			explore_village?: SkyBlockProfileQuest;
@@ -3504,7 +3510,7 @@ export declare namespace Components {
 		 * The contents of their sacks.
 		 */
 		export interface SkyBlockProfileSacksCounts {
-			[name: string]: undefined | number;
+			[name: string]: number | undefined;
 			BLAZE_ROD?: number;
 			BONE?: number;
 			CACTUS?: number;
@@ -3582,17 +3588,17 @@ export declare namespace Components {
 		}
 		export interface SkyBlockProfileSlayerBoss {
 			[name: string]:
-				| undefined
 				| number
 				| {
-						[name: string]: undefined | boolean;
-				  };
+						[name: string]: boolean | undefined;
+				  }
+				| undefined;
 			boss_kills_tier_0?: number;
 			boss_kills_tier_1?: number;
 			boss_kills_tier_2?: number;
 			boss_kills_tier_3?: number;
 			claimed_levels: {
-				[name: string]: undefined | boolean;
+				[name: string]: boolean | undefined;
 				level_1?: boolean;
 				level_2?: boolean;
 				level_3?: boolean;
@@ -3627,7 +3633,7 @@ export declare namespace Components {
 			xp_on_last_follower_spawn?: number;
 		}
 		export interface SkyBlockProfileStats {
-			[name: string]: undefined | number | Record<string, number | Record<string, number | Record<string, number>>>;
+			[name: string]: Record<string, Record<string, Record<string, number> | number> | number> | number | undefined;
 			auctions?: {
 				bids?: number;
 				bought_common?: number;
@@ -5156,7 +5162,7 @@ export declare namespace Paths {
 						originalLength: number;
 						length: number;
 						gameType: number;
-						stacked?: boolean | string[];
+						stacked?: string[] | boolean;
 						dateActivated: number;
 					}[];
 					boosterState: {

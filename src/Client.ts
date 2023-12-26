@@ -199,7 +199,7 @@ export class Client extends EventEmitter {
 	/**
 	 * @internal
 	 */
-	private static readonly endpoint = new URL(`https://api.hypixel.net`);
+	private static readonly endpoint = new URL('https://api.hypixel.net/v2/');
 
 	/**
 	 * @internal

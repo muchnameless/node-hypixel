@@ -8,7 +8,7 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "target": "ESNext",
-    "types": ["node", "mocha"],
+    "types": ["node"],
     "incremental": true,
     "pretty": true,
     "strict": true,

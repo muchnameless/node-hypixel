@@ -111,8 +111,8 @@ export function getSkyBlockProfileMemberCollections(
 ): SkyBlockProfileCollections | false {
 	const profileCollectionValues = Object.values(profile.members).reduce<ProfileCollectionValues>(
 		(acc, member) => {
-			if (member.unlocked_coll_tiers) {
-				for (const uTier of member.unlocked_coll_tiers) {
+			if (member.player_data?.unlocked_coll_tiers) {
+				for (const uTier of member.player_data.unlocked_coll_tiers) {
 					acc.unlockedCollTiers.add(uTier);
 				}
 			}

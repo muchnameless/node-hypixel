@@ -2935,7 +2935,7 @@ export declare namespace Components {
 					talisman_bag?: SkyBlockProfileInventoryData;
 				};
 				ender_chest_contents?: SkyBlockProfileInventoryData;
-				equippment_contents?: SkyBlockProfileInventoryData;
+				equipment_contents?: SkyBlockProfileInventoryData;
 				inv_armor?: SkyBlockProfileInventoryData;
 				inv_contents?: SkyBlockProfileInventoryData;
 				personal_vault_contents?: SkyBlockProfileInventoryData;

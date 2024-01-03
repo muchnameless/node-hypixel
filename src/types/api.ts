@@ -2871,7 +2871,7 @@ export declare namespace Components {
 		export interface SkyBlockProfileInventoryAPI {
 			candy_inventory_contents?: SkyBlockProfileInventoryData;
 			ender_chest_contents?: SkyBlockProfileInventoryData;
-			equippment_contents?: SkyBlockProfileInventoryData;
+			equipment_contents?: SkyBlockProfileInventoryData;
 			fishing_bag?: SkyBlockProfileInventoryData;
 			inv_contents?: SkyBlockProfileInventoryData;
 			personal_vault_contents?: SkyBlockProfileInventoryData;

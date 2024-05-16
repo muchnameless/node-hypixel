@@ -119,6 +119,7 @@ export interface NBTExtraAttributes {
 	price?: number[];
 	rarity_upgrades?: number;
 	runes?: { [name: string]: number };
+	sack_pss?: number;
 	skin?: string;
 	/**
 	 * The contents of the backpack.

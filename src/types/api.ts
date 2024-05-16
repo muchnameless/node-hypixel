@@ -2547,6 +2547,12 @@ export declare namespace Components {
 			version: string;
 			collections: /* Objects for each individual parent collection (currently FARMING, MINING, COMBAT, FORAGING, FISHING). */ SkyBlockResourcesParentCollections;
 		}
+		export type SkyBlockMuseumResponse = {
+			success: boolean;
+			members: {
+				[uuid: string]: unknown;
+			};
+		}
 		export type SkyBlockProfile = {
 			autodelete?: boolean;
 			banking?: /* Profile banking information. Only shows up if their banking API is enabled. */ SkyBlockProfileBanking;
@@ -2932,6 +2938,7 @@ export declare namespace Components {
 					fishing_bag?: SkyBlockProfileInventoryData;
 					potion_bag?: SkyBlockProfileInventoryData;
 					quiver?: SkyBlockProfileInventoryData;
+					sacks_bag?: SkyBlockProfileInventoryData;
 					talisman_bag?: SkyBlockProfileInventoryData;
 				};
 				ender_chest_contents?: SkyBlockProfileInventoryData;
@@ -7298,6 +7305,20 @@ export declare namespace Paths {
 		namespace Get {
 			namespace Responses {
 				export type $200 = Components.Schemas.SkyBlockBazaarResponse;
+			}
+		}
+	}
+	namespace SkyBlockMuseum {
+		namespace Get {
+			namespace Parameters {
+				/**
+				 * example:
+				 * 347ef6c1daac45ed9d1fa02818cf0fb6
+				 */
+				export type Profile = string;
+			}
+			namespace Responses {
+				export type $200 = Components.Schemas.SkyBlockMuseumResponse;
 			}
 		}
 	}
